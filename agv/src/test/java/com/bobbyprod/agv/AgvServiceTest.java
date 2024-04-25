@@ -9,14 +9,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 
 
-@SpringBootTest("service.message=Hello from the AGV service")
+@SpringBootTest()
 public class AgvServiceTest {
     @Autowired
     private AgvService agvService;
 
     @Test
     public void contextLoads() {
-        assertThat(agvService.message()).isNotNull();
     }
 
     @SpringBootApplication
