@@ -11,6 +11,7 @@
 		<module>core</module>
 		<module>agv</module>
 		<module>assemblystation</module>
+		<module>warehouse</module>
 	</modules>
 
 </project>
