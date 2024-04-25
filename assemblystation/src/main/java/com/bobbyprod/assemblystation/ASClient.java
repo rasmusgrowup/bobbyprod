@@ -1,4 +1,4 @@
-package com.bobbyprod;
+package com.bobbyprod.assemblystation;
 
 import com.google.gson.Gson;
 import org.eclipse.paho.client.mqttv3.*;
