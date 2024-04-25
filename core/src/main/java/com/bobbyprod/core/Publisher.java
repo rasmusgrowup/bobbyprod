@@ -29,11 +29,11 @@ public class Publisher {
     public static void main(String[] args) throws MqttException {
         ASClient client = new ASClient();
         Publisher publisher = new Publisher();
-        AssemblyCommand startCommand = new AssemblyCommand(12345);
+        AssemblyCommand startCommand = new AssemblyCommand(1234);
         ASObserver asObserver = new ASObserver("1");
         publisher.registerObserver(asObserver);
-        //client.publish("emulator/operation", startCommand);
+        client.connect();
+        client.publish("emulator/operation", startCommand);
         publisher.publishMessage("Start assemble");
-        System.out.println("Message published");
     }
 }
