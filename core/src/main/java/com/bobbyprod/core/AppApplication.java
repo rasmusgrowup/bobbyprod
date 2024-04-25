@@ -1,18 +1,29 @@
 package com.bobbyprod.core;
 
+import com.bobbyprod.agv.AgvService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@SpringBootApplication(scanBasePackages = "com.bobbyprod")
 @RestController
+@SpringBootApplication(scanBasePackages = "com.bobbyprod")
 public class AppApplication {
+	private final AgvService agvService;
 
+	@Autowired
+	public AppApplication(AgvService agvService) {
+		this.agvService = agvService;
+	}
 
 	@GetMapping("/")
 	public String home() {
-		return "Hello World!";
+		return agvService.getStatus();
+	}
+
+	@PutMapping("/status")
+	public void updateStatus(@RequestBody String newStatus) {
+		agvService.updateStatus(newStatus);
 	}
 
 	public static void main(String[] args) {
