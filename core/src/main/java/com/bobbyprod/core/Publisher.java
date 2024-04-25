@@ -27,13 +27,20 @@ public class Publisher {
     }
 
     public static void main(String[] args) throws MqttException {
-        ASClient client = new ASClient();
+        /**ASClient client = new ASClient();
         Publisher publisher = new Publisher();
         AssemblyCommand startCommand = new AssemblyCommand(1234);
         ASObserver asObserver = new ASObserver("1");
         publisher.registerObserver(asObserver);
         client.connect();
+        client.subscribe("emulator/status");
         client.publish("emulator/operation", startCommand);
-        publisher.publishMessage("Start assemble");
+        publisher.publishMessage("Start-assemble"); */
+
+        Publisher publisher = new Publisher();
+        ASObserver asObserver = new ASObserver("1");
+        publisher.registerObserver(asObserver);
+        publisher.publishMessage("Start-assemble");
+
     }
 }

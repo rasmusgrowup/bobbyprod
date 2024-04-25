@@ -10,7 +10,7 @@ public class ASMain {
             client.connect();
             client.subscribe("emulator/status");
 
-            AssemblyCommand startCommand = new AssemblyCommand(12345);
+            AssemblyCommand startCommand = new AssemblyCommand(89999);
             client.publish("emulator/operation", startCommand);
         } catch (MqttException e) {
             throw new RuntimeException(e);

@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
+import java.util.Arrays;
+
 public class ASClient {
 
     private static final String broker_URL = "tcp://localhost:1883";
