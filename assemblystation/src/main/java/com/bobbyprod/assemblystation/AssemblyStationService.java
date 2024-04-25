@@ -1,4 +1,4 @@
-package com.bobbyprod;
+package com.bobbyprod.assemblystation;
 
 import org.springframework.stereotype.Service;
 
