@@ -16,6 +16,7 @@ public class AppApplication {
 		this.agvService = agvService;
 	}
 
+	/*
 	@GetMapping("/")
 	public String home() {
 		return agvService.getStatus();
@@ -28,6 +29,5 @@ public class AppApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(AppApplication.class, args);
-	}
-
+	}*/
 }
