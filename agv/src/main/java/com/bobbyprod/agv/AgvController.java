@@ -1,6 +1,7 @@
 package com.bobbyprod.agv;
 
-import com.bobbyprod.common.Tasks.Task;
+import com.bobbyprod.common.States.AssetState;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -15,6 +16,7 @@ public class AgvController {
     private final RestTemplate restTemplate;
     //private final AgvService agvService;
 
+    @Autowired
     public AgvController(RestTemplate restTemplate) {
         //this.agvService = agvService;
         this.restTemplate = new RestTemplate();
