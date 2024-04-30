@@ -17,4 +17,9 @@ public class Agv extends Asset {
     public boolean processTask(Task task) {
         return agvService.handleTask(task);
     }
+
+    @Override
+    public void updateState(AssetState state) {
+        setState(state);
+    }
 }
