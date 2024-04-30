@@ -6,8 +6,13 @@ import org.springframework.web.client.RestTemplate;
 
 public class AgvServiceRunner {
     public static void main(String[] args) {
+        run();
+    }
+
+    public static void run() {
         // Create an instance of AgvService
-        AgvService agvService = new AgvService(new RestTemplate());
+        AgvController agvController = new AgvController(new RestTemplate());
+        AgvService agvService = new AgvService(agvController);
 
         // Create a new task
         Task task = new Task();
