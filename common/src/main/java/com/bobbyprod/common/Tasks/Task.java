@@ -15,14 +15,6 @@ public class Task {
         this.actionType = actionType;
     }
 
-    /*public String getTargetLocation() {
-        return targetLocation;
-    }
-
-    public void setTargetLocation(String targetLocation) {
-        this.targetLocation = targetLocation;
-    }*/
-
     public AssetType getCompatibleAssetType() {
         return compatibleAssetType;
     }

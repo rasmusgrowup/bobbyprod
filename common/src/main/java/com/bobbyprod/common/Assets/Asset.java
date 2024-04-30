@@ -2,20 +2,25 @@ package com.bobbyprod.common.Assets;
 
 import com.bobbyprod.common.States.AssetState;
 import com.bobbyprod.common.Tasks.Task;
+import com.bobbyprod.common.Interface.IMediator;
 
 public abstract class Asset {
     private String id;
     private String name;
     private final AssetType type;
-    //private String location;
     private AssetState state;
+    protected IMediator mediator;
 
-    public Asset(String id, String name, /*String location,*/ AssetState state, AssetType type) {
+    public Asset(String id, String name, AssetState state, AssetType type, IMediator mediator) {
         this.id = id;
         this.name = name;
         this.type = type;
-        //this.location = location;
         this.state = state;
+        this.mediator = mediator;
+    }
+
+    public AssetType getType() {
+        return type;
     }
 
     public String getId() {
@@ -26,10 +31,6 @@ public abstract class Asset {
         return name;
     }
 
-    /* public String getLocation() {
-        return location;
-    } */
-
     public AssetState getState() {
         return state;
     }
@@ -38,7 +39,7 @@ public abstract class Asset {
         this.state = state;
     }
 
-    public void acceptTask(Task task) {
+    public void handleTask(Task task) {
         this.state = AssetState.BUSY;
         if (processTask(task)) {
             this.state = AssetState.IDLE;
