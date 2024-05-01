@@ -3,7 +3,7 @@ package com.bobbyprod.core;
 import com.bobbyprod.common.Assets.Asset;
 import com.bobbyprod.assemblystation.AssemblyStation;
 import com.bobbyprod.common.Assets.AssetType;
-import com.bobbyprod.common.States.AssetState;
+import com.bobbyprod.common.Communication.Mediator;
 import com.bobbyprod.common.Tasks.ActionType;
 import com.bobbyprod.common.Tasks.Task;
 
@@ -13,7 +13,7 @@ public class Main {
         Mediator mediator = new Mediator();
 
         // Create asset
-        Asset assemblyStation = new AssemblyStation("AS1", "Main Assembly Station", AssetState.IDLE, AssetType.ASSEMBLY_STATION, mediator);
+        Asset assemblyStation = new AssemblyStation("AS1", "Main Assembly Station", mediator);
 
         // Register asset with the mediator
         mediator.registerAsset(assemblyStation);

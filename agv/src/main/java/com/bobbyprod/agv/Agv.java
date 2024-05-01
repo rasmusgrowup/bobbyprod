@@ -3,6 +3,7 @@ package com.bobbyprod.agv;
 import com.bobbyprod.agv.service.AgvService;
 import com.bobbyprod.common.Assets.Asset;
 import com.bobbyprod.common.Assets.AssetType;
+import com.bobbyprod.common.Interfaces.IMediator;
 import com.bobbyprod.common.States.AssetState;
 import com.bobbyprod.common.Tasks.Task;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +14,8 @@ public class Agv extends Asset {
     private AgvService agvService;
     private AssetState state;
 
-    public Agv() {
-        super("AGV", "AGV-1", AssetType.AGV);
+    public Agv(IMediator mediator) {
+        super("AGV", "AGV-1", AssetType.AGV, mediator);
         this.state = AssetState.IDLE;
     }
 

@@ -2,7 +2,7 @@ package com.bobbyprod.common.Assets;
 
 import com.bobbyprod.common.States.AssetState;
 import com.bobbyprod.common.Tasks.Task;
-import com.bobbyprod.common.Interface.IMediator;
+import com.bobbyprod.common.Interfaces.IMediator;
 
 public abstract class Asset {
     private String id;
@@ -11,11 +11,10 @@ public abstract class Asset {
     private AssetState state;
     protected IMediator mediator;
 
-    public Asset(String id, String name, AssetState state, AssetType type, IMediator mediator) {
+    public Asset(String id, String name, AssetType type, IMediator mediator) {
         this.id = id;
         this.name = name;
         this.type = type;
-        this.state = state;
         this.mediator = mediator;
     }
 
@@ -29,14 +28,6 @@ public abstract class Asset {
 
     public String getName() {
         return name;
-    }
-
-    public AssetState getState() {
-        return state;
-    }
-
-    public void setState(AssetState state) {
-        this.state = state;
     }
 
     public void handleTask(Task task) {

@@ -3,16 +3,17 @@ package com.bobbyprod.assemblystation;
 import com.bobbyprod.common.Assets.Asset;
 import com.bobbyprod.common.Assets.AssetType;
 import com.bobbyprod.common.States.AssetState;
-import com.bobbyprod.common.Tasks.ActionType;
 import com.bobbyprod.common.Tasks.Task;
-import com.bobbyprod.common.Interface.IMediator;
+import com.bobbyprod.common.Interfaces.IMediator;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
 public class AssemblyStation extends Asset {
+    private AssetState state;
 
     private ASClient mqttClient;
-    public AssemblyStation(String id, String name, AssetState state, AssetType type, IMediator mediator) {
-        super(id, name, AssetState.IDLE, AssetType.ASSEMBLY_STATION, mediator);
+    public AssemblyStation(String id, String name, IMediator mediator) {
+        super(id, name, AssetType.ASSEMBLY_STATION, mediator);
+        this.state = AssetState.IDLE;
         this.mqttClient = new ASClient();
         try {
             mqttClient.connect();  // Attempt to connect to the MQTT broker
@@ -51,6 +52,21 @@ public class AssemblyStation extends Asset {
             System.out.println("Failed to publish MQTT message: " + e.getMessage());
             return false;
         }
+    }
+
+    @Override
+    public AssetState getState() {
+        return state;
+    }
+
+    @Override
+    public void setState(AssetState state) {
+        this.state = state;
+    }
+
+    @Override
+    public void updateState(AssetState state) {
+        setState(state);
     }
 }
 

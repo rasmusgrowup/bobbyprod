@@ -1,4 +1,4 @@
-package com.bobbyprod.common.Interface;
+package com.bobbyprod.common.Interfaces;
 
 import com.bobbyprod.common.Assets.Asset;
 import com.bobbyprod.common.Tasks.Task;

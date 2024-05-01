@@ -4,7 +4,7 @@ import com.bobbyprod.common.Assets.AssetType;
 import com.bobbyprod.common.States.AssetState;
 import com.bobbyprod.common.Tasks.ActionType;
 import com.bobbyprod.common.Tasks.Task;
-import com.bobbyprod.common.Interface.IMediator;
+import com.bobbyprod.common.Interfaces.IMediator;
 import com.bobbyprod.assemblystation.AssemblyStation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ class AcceptCompatibleTask {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        assemblyStation = new AssemblyStation("AS1", "Main Assembly Station", AssetState.IDLE, AssetType.ASSEMBLY_STATION, mediator);
+        assemblyStation = new AssemblyStation("AS1", "Main Assembly Station", mediator);
     }
 
     @Test

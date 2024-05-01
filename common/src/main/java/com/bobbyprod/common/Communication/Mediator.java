@@ -1,14 +1,16 @@
-package com.bobbyprod.core;
+package com.bobbyprod.common.Communication;
 
 import com.bobbyprod.common.Assets.Asset;
-import com.bobbyprod.common.Interface.IMediator;
+import com.bobbyprod.common.Interfaces.IMediator;
 import com.bobbyprod.common.Tasks.Task;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 // The Mediator class acts as a mediator by coordinating interactions between various components such as AGVs,
 // assembly stations, and warehouses. It handles tasks based on events triggered by these assets.
+@Component
 public class Mediator implements IMediator {
     private List<Asset> assets; // List of all registered assets
 
