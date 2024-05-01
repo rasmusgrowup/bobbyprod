@@ -1,4 +1,4 @@
-package com.bobbyprod.agv;
+package com.bobbyprod.agv.model;
 
 public class AgvChangeState {
     private int state;

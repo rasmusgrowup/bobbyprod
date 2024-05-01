@@ -1,7 +1,8 @@
 package com.bobbyprod.core;
 
-import com.bobbyprod.agv.AgvController;
-import com.bobbyprod.agv.AgvServiceRunner;
+import com.bobbyprod.agv.Agv;
+import com.bobbyprod.agv.controller.AgvController;
+import com.bobbyprod.agv.service.AgvServiceRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,20 +11,17 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @SpringBootApplication(scanBasePackages = "com.bobbyprod")
 public class AppApplication {
-	private final AgvController agvController;
-	private final AgvServiceRunner agvServiceRunner;
+	private final Agv agv;
 
 	@Autowired
-	public AppApplication(AgvController agvController) {
-		this.agvController = agvController;
-		this.agvServiceRunner = new AgvServiceRunner();
+	public AppApplication(Agv agv) {
+		this.agv = agv;
 	}
 
 
 	@GetMapping("/")
 	public String home() {
-		AgvServiceRunner.run();
-		return agvController.getStatus();
+		return agv.getState().toString();
 	}
 
 	/*@PutMapping("/status")

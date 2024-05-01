@@ -1,5 +1,7 @@
-package com.bobbyprod.agv;
+package com.bobbyprod.agv.service;
 
+import com.bobbyprod.agv.Agv;
+import com.bobbyprod.agv.controller.AgvController;
 import com.bobbyprod.common.Tasks.ActionType;
 import com.bobbyprod.common.Tasks.Task;
 import org.springframework.web.client.RestTemplate;
@@ -11,8 +13,9 @@ public class AgvServiceRunner {
 
     public static void run() {
         // Create an instance of AgvService
+        Agv agv = new Agv();
         AgvController agvController = new AgvController(new RestTemplate());
-        AgvService agvService = new AgvService(agvController);
+        AgvService agvService = new AgvService(agvController, agv);
 
         // Create a new task
         Task task = new Task();
