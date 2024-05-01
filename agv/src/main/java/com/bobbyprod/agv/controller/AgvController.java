@@ -1,6 +1,7 @@
-package com.bobbyprod.agv;
+package com.bobbyprod.agv.controller;
 
-import com.bobbyprod.common.States.AssetState;
+import com.bobbyprod.agv.model.AgvChangeState;
+import com.bobbyprod.agv.model.AgvLoadProgram;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,7 +20,7 @@ public class AgvController {
     @Autowired
     public AgvController(RestTemplate restTemplate) {
         //this.agvService = agvService;
-        this.restTemplate = new RestTemplate();
+        this.restTemplate = restTemplate;
     }
 
     public String getStatus() {
