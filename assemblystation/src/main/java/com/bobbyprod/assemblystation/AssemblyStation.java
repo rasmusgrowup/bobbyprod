@@ -12,12 +12,15 @@ public class AssemblyStation extends Asset {
         super(id, name, AssetState.IDLE, AssetType.ASSEMBLY_STATION, mediator);
     }
 
-    public void handleTask(Task task) {
+    
+    public void acceptTask(Task task) {
         System.out.println("AssemblyStation " + getName() + " is processing the task: " + task.getActionType());
         if (processTask(task)) {
             System.out.println("Task successfully completed by " + getName());
+            this.setState(AssetState.IDLE);  // Update state to IDLE on success
         } else {
             System.out.println("Task failed by " + getName());
+            this.setState(AssetState.ERROR); // Update state to ERROR on failure
         }
     }
     @Override
