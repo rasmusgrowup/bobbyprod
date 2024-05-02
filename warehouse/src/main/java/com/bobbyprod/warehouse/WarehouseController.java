@@ -1,4 +1,4 @@
-package com.bobbyprod;
+package com.bobbyprod.warehouse;
 
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -12,7 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
-public class SoapClient {
+public class WarehouseController {
     String wsURL = "http://localhost:8081/Service.asmx";
 
     public String sendSoapRequest(String xmlInput){
@@ -95,21 +95,33 @@ public class SoapClient {
         System.out.println(webServiceResponse);
     }
 
-    private org.w3c.dom.Document parseXmlFile(String input){
-        if (input != null && input.startsWith("\uFEFF")) {
-            input = input.substring(1);
+//    private org.w3c.dom.Document parseXmlFile(String input){
+//        if (input != null && input.startsWith("\uFEFF")) {
+//            input = input.substring(1);
+//        }
+//        try {
+//            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+//            DocumentBuilder db = dbf.newDocumentBuilder();
+//            InputSource is = new InputSource(new StringReader(input));
+//            return db.parse(is);
+//        } catch (ParserConfigurationException e) {
+//            throw new RuntimeException(e);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        } catch (SAXException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+
+    public String extractJsonFromXml(String xml) throws Exception {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document doc = builder.parse(new InputSource(new StringReader(xml)));
+
+        NodeList nl = doc.getElementsByTagName("GetInventoryResult");
+        if (nl.getLength() > 0) {
+            return nl.item(0).getTextContent();
         }
-        try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            InputSource is = new InputSource(new StringReader(input));
-            return db.parse(is);
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (SAXException e) {
-            throw new RuntimeException(e);
-        }
+        return null; // Return null if no JSON found
     }
 }
