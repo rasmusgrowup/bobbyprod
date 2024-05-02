@@ -44,7 +44,7 @@ public class Mediator implements IMediator {
             case "TaskCompleted":
                 System.out.println(asset.getName() + " completed task: " + task.getActionType());
                 assetTasks.put(asset, null); // Clear the task as it is completed
-                handleTask(asset, task);
+                fleetManagement(asset, task);
                 break;
             case "TaskFailed":
                 System.out.println(asset.getName() + " failed task: " + task.getActionType());
@@ -53,7 +53,7 @@ public class Mediator implements IMediator {
         }
     }
 
-    private void handleTask(Asset asset, Task task) {
+    private void fleetManagement(Asset asset, Task task) {
         System.out.println(asset.getName() + " completed task: " + task.getActionType());
         // Determine next step based on the task completed
         //Combined tasks:

@@ -1,16 +1,19 @@
 package com.bobbyprod.common.Products;
 
+import java.util.ArrayList;
+
 public abstract class Product {
+    private ProductStatus status;
     private String name;
     private String id;
     private String location;
-
-    public Product(String name, String id, String location) {
+    private ArrayList<Part> partsList = new ArrayList<Part>();
+    public Product(String name, String id, String location,  ArrayList<Part> partsList) {
         this.name = name;
         this.id = id;
         this.location = location;
+        this.partsList = partsList;
     }
-
     public String getName() {
         return name;
     }
@@ -33,5 +36,9 @@ public abstract class Product {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public ArrayList<Part> getPartsList() {
+        return partsList;
     }
 }
