@@ -56,71 +56,16 @@ public class Mediator implements IMediator {
     private void handleTask(Asset asset, Task task) {
         System.out.println(asset.getName() + " completed task: " + task.getActionType());
         // Determine next step based on the task completed
+        //Combined tasks:
         switch (task.getActionType()) {
-            case PICK_ITEM_FROM_WAREHOUSE:
-                for (Asset a : assets) {
-                    if (a.getState() == AssetState.IDLE) {
-                        Task newTask = new Task();
-                        newTask.setActionType(ActionType.MOVE_TO_WAREHOUSE);
-                        assignTask(a, newTask);
-                        break;
-                    }
+            case MOVE_TO_WAREHOUSE:
+                if (asset.getType() == AssetType.AGV && asset.getState() == AssetState.IDLE) {
+                    Task newTask = new Task();
+                    newTask.setActionType(ActionType.MOVE_TO_ASSEMBLY_STATION_PARTS);
+                    assignTask(asset, newTask); // Assign the task to the same AGV
+                    break;
                 }
             case MOVE_TO_ASSEMBLY_STATION_PARTS:
-                for (Asset a : assets) {
-                    if (a.getState() == AssetState.IDLE) {
-                        Task newTask = new Task();
-                        newTask.setActionType(ActionType.PUT_ITEM_TO_ASSEMBLY_STATION);
-                        assignTask(a, newTask);
-                        break;
-                    }
-                }
-            case PUT_ITEM_TO_ASSEMBLY_STATION:
-                for (Asset a : assets) {
-                    if (a.getState() == AssetState.IDLE) {
-                        Task newTask = new Task();
-                        newTask.setActionType(ActionType.MOVE_TO_ASSEMBLY_STATION_ITEM);
-                        assignTask(a, newTask);
-                        break;
-                    }
-                }
-            case MOVE_TO_ASSEMBLY_STATION_ITEM:
-                for (Asset a : assets) {
-                    if (a.getState() == AssetState.IDLE) {
-                        Task newTask = new Task();
-                        newTask.setActionType(ActionType.PICK_ITEM_FROM_ASSEMBLY_STATION);
-                        assignTask(a, newTask);
-                        break;
-                    }
-                }
-            case PICK_ITEM_FROM_ASSEMBLY_STATION:
-                for (Asset a : assets) {
-                    if (a.getState() == AssetState.IDLE) {
-                        Task newTask = new Task();
-                        newTask.setActionType(ActionType.MOVE_TO_WAREHOUSE);
-                        assignTask(a, newTask);
-                        break;
-                    }
-                }
-            case MOVE_TO_WAREHOUSE:
-                for (Asset a : assets) {
-                    if (a.getState() == AssetState.IDLE) {
-                        Task newTask = new Task();
-                        newTask.setActionType(ActionType.PUT_ITEM_TO_WAREHOUSE);
-                        assignTask(a, newTask);
-                        break;
-                    }
-                }
-            case PUT_ITEM_TO_WAREHOUSE:
-                for (Asset a : assets) {
-                    if (a.getState() == AssetState.IDLE) {
-                        Task newTask = new Task();
-                        newTask.setActionType(ActionType.INSERT_ITEM);
-                        assignTask(a, newTask);
-                        break;
-                    }
-                }
-                break;
         }
     }
 
