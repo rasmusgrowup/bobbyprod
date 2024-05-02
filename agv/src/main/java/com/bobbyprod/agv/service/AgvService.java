@@ -24,18 +24,53 @@ public class AgvService {
         boolean result = false;
         switch (task.getActionType()) {
             case MOVE_TO_WAREHOUSE:
+                //Drains 5% power
                 result = agvController.loadProgram("MoveToStorageOperation", 1);
                 if (result) {
                     result = agvController.changeState(2);
                 }
                 break;
             case MOVE_TO_ASSEMBLY_STATION:
-                // Logic to move AGV to the assembly station
+                //Drains 5% power
+                result = agvController.loadProgram("MoveToAssemblyOperation", 1);
+                if (result) {
+                    result = agvController.changeState(2);
+                }
                 break;
             case MOVE_TO_CHARGER:
-                // Logic to move AGV to the charger
+                //Recharges the battery to full
+                result = agvController.loadProgram("MoveToChargerOperation", 1);
+                if (result) {
+                    result = agvController.changeState(2);
+                }
                 break;
-            // Handle other action types
+            case PICK_ITEM_FROM_WAREHOUSE:
+                //Drains 1% power
+                result = agvController.loadProgram("PickWarehouseOperation", 1);
+                if (result) {
+                    result = agvController.changeState(2);
+                }
+                break;
+            case PUT_ITEM_TO_WAREHOUSE:
+                //Drains 1% power
+                result = agvController.loadProgram("PutWarehouseOperation", 1);
+                if (result) {
+                    result = agvController.changeState(2);
+                }
+                break;
+            case PICK_ITEM_FROM_ASSEMBLY_STATION:
+                //Drains 1% power
+                result = agvController.loadProgram("PickAssemblyOperation", 1);
+                if (result) {
+                    result = agvController.changeState(2);
+                }
+                break;
+            case PUT_ITEM_TO_ASSEMBLY_STATION:
+                //Drains 1% power
+                result = agvController.loadProgram("PutAssemblyOperation", 1);
+                if (result) {
+                    result = agvController.changeState(2);
+                }
         }
         if (result) {
             agv.setState(AssetState.IDLE);
