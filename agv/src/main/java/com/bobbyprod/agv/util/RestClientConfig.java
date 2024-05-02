@@ -1,4 +1,4 @@
-package com.bobbyprod.agv;
+package com.bobbyprod.agv.util;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

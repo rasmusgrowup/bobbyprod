@@ -1,44 +1,30 @@
-package com.bobbyprod.agv;
+package com.bobbyprod.agv.controller;
 
-import com.bobbyprod.common.Tasks.Task;
+import com.bobbyprod.agv.model.AgvChangeState;
+import com.bobbyprod.agv.model.AgvLoadProgram;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
-import org.springframework.stereotype.Service;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-@Service
-public class AgvService {
+@Controller
+public class AgvController {
     private final RestTemplate restTemplate;
+    //private final AgvService agvService;
 
     @Autowired
-    public AgvService(RestTemplate restTemplate) {
+    public AgvController(RestTemplate restTemplate) {
+        //this.agvService = agvService;
         this.restTemplate = restTemplate;
     }
 
     public String getStatus() {
         return restTemplate.getForObject("http://localhost:8082/v1/status", String.class);
-    }
-
-    public boolean handleTask(Task task) {
-        boolean result = false;
-        switch (task.getActionType()) {
-            case MOVE_TO_WAREHOUSE:
-                result = loadProgram("MoveToStorageOperation", 1);
-                if (result) {
-                    result = changeState(2);
-                }
-                break;
-            case MOVE_TO_ASSEMBLY_STATION:
-                // Logic to move AGV to the assembly station
-                break;
-            case MOVE_TO_CHARGER:
-                // Logic to move AGV to the charger
-                break;
-            // Handle other action types
-        }
-        return result;
     }
 
     public boolean loadProgram(String programName, int state) {
