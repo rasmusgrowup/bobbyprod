@@ -1,42 +1,132 @@
 package com.bobbyprod.common.Communication;
 
 import com.bobbyprod.common.Assets.Asset;
+import com.bobbyprod.common.Assets.AssetType;
 import com.bobbyprod.common.Interfaces.IMediator;
+import com.bobbyprod.common.States.AssetState;
+import com.bobbyprod.common.Tasks.ActionType;
 import com.bobbyprod.common.Tasks.Task;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-// The Mediator class acts as a mediator by coordinating interactions between various components such as AGVs,
-// assembly stations, and warehouses. It handles tasks based on events triggered by these assets.
 @Component
 public class Mediator implements IMediator {
     private List<Asset> assets; // List of all registered assets
+    private Map<Asset, Task> assetTasks; // Map to keep track of current tasks for each asset
 
     public Mediator() {
         assets = new ArrayList<>();
+        assetTasks = new HashMap<>();
     }
 
     // Registers assets with the mediator
     public void registerAsset(Asset asset) {
         assets.add(asset);
+        assetTasks.put(asset, null); // Initialize with no task assigned
     }
 
     // Handles notifications from assets. Decides action based on event type and asset type.
     @Override
     public void notify(Asset asset, String event, Task task) {
-        // Ensure task is compatible with the asset's type before assigning
-        if (task.getCompatibleAssetType() == asset.getType()) {
-            switch (event) {
-                case "TaskAssigned":
-                    System.out.println("Task " + task.getActionType() + " assigned to " + asset.getName());
-                    asset.handleTask(task);
-                    break;
-                // Additional handling for other events can be added here
-            }
-        } else {
-            System.out.println("Task " + task.getActionType() + " not compatible with " + asset.getName() + ", type: " + asset.getType());
+        if (!assets.contains(asset)) {
+            System.out.println("Asset not registered: " + asset.getName());
+            return;
         }
+        switch (event) {
+            case "TaskAccepted":
+                System.out.println(asset.getName() + " accepted task: " + task.getActionType());
+                assetTasks.put(asset, task);
+                break;
+            case "TaskCompleted":
+                System.out.println(asset.getName() + " completed task: " + task.getActionType());
+                assetTasks.put(asset, null); // Clear the task as it is completed
+                handleTask(asset, task);
+                break;
+            case "TaskFailed":
+                System.out.println(asset.getName() + " failed task: " + task.getActionType());
+                assetTasks.put(asset, null); // Clear the task on failure
+                break;
+        }
+    }
+
+    private void handleTask(Asset asset, Task task) {
+        System.out.println(asset.getName() + " completed task: " + task.getActionType());
+        // Determine next step based on the task completed
+        switch (task.getActionType()) {
+            case PICK_ITEM_FROM_WAREHOUSE:
+                for (Asset a : assets) {
+                    if (a.getState() == AssetState.IDLE) {
+                        Task newTask = new Task();
+                        newTask.setActionType(ActionType.MOVE_TO_WAREHOUSE);
+                        assignTask(a, newTask);
+                        break;
+                    }
+                }
+            case MOVE_TO_ASSEMBLY_STATION_PARTS:
+                for (Asset a : assets) {
+                    if (a.getState() == AssetState.IDLE) {
+                        Task newTask = new Task();
+                        newTask.setActionType(ActionType.PUT_ITEM_TO_ASSEMBLY_STATION);
+                        assignTask(a, newTask);
+                        break;
+                    }
+                }
+            case PUT_ITEM_TO_ASSEMBLY_STATION:
+                for (Asset a : assets) {
+                    if (a.getState() == AssetState.IDLE) {
+                        Task newTask = new Task();
+                        newTask.setActionType(ActionType.MOVE_TO_ASSEMBLY_STATION_ITEM);
+                        assignTask(a, newTask);
+                        break;
+                    }
+                }
+            case MOVE_TO_ASSEMBLY_STATION_ITEM:
+                for (Asset a : assets) {
+                    if (a.getState() == AssetState.IDLE) {
+                        Task newTask = new Task();
+                        newTask.setActionType(ActionType.PICK_ITEM_FROM_ASSEMBLY_STATION);
+                        assignTask(a, newTask);
+                        break;
+                    }
+                }
+            case PICK_ITEM_FROM_ASSEMBLY_STATION:
+                for (Asset a : assets) {
+                    if (a.getState() == AssetState.IDLE) {
+                        Task newTask = new Task();
+                        newTask.setActionType(ActionType.MOVE_TO_WAREHOUSE);
+                        assignTask(a, newTask);
+                        break;
+                    }
+                }
+            case MOVE_TO_WAREHOUSE:
+                for (Asset a : assets) {
+                    if (a.getState() == AssetState.IDLE) {
+                        Task newTask = new Task();
+                        newTask.setActionType(ActionType.PUT_ITEM_TO_WAREHOUSE);
+                        assignTask(a, newTask);
+                        break;
+                    }
+                }
+            case PUT_ITEM_TO_WAREHOUSE:
+                for (Asset a : assets) {
+                    if (a.getState() == AssetState.IDLE) {
+                        Task newTask = new Task();
+                        newTask.setActionType(ActionType.INSERT_ITEM);
+                        assignTask(a, newTask);
+                        break;
+                    }
+                }
+                break;
+        }
+    }
+
+    private void assignTask(Asset asset, Task task) {
+        System.out.println("Assigning task " + task.getActionType() + " to " + asset.getName());
+        assetTasks.put(asset, task);
+        asset.handleTask(task);
     }
 }

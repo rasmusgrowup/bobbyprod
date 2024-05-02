@@ -38,7 +38,6 @@ public abstract class Asset {
             this.state = AssetState.ERROR;
         }
     }
-
     public abstract boolean processTask(Task task);
     public abstract AssetState getState();
     public abstract void setState(AssetState state);
