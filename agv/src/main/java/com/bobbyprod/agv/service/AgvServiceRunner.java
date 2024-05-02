@@ -17,7 +17,7 @@ public class AgvServiceRunner {
         Mediator mediator = new Mediator();
         Agv agv = new Agv(mediator);
         AgvController agvController = new AgvController(new RestTemplate());
-        AgvService agvService = new AgvService(agvController, agv);
+        AgvService agvService = new AgvService(agvController);
 
         // Create a new task
         Task task = new Task();
