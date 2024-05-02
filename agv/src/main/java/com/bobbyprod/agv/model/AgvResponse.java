@@ -4,16 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
 
 public class AgvResponse {
-    @JsonProperty("battery")
     private int battery;
-
-    @JsonProperty("program name")
     private String programName;
-
-    @JsonProperty("state")
     private int state;
-
-    @JsonProperty("timestamp")
     private LocalDateTime timestamp;
 
     public int getBattery() {

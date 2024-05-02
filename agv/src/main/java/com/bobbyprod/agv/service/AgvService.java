@@ -10,17 +10,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class AgvService {
     private final AgvController agvController;
-    private final Agv agv;
     private AssetState state;
 
     @Autowired
-    public AgvService(AgvController agvController, Agv agv) {
+    public AgvService(AgvController agvController) {
         this.agvController = agvController;
-        this.agv = agv;
     }
 
     public boolean handleTask(Task task) {
-        agv.setState(AssetState.BUSY);
         boolean result = false;
         switch (task.getActionType()) {
             case MOVE_TO_WAREHOUSE:
@@ -72,15 +69,6 @@ public class AgvService {
                     result = agvController.changeState(2);
                 }
         }
-        if (result) {
-            agv.setState(AssetState.IDLE);
-        } else {
-            agv.setState(AssetState.ERROR);
-        }
         return result;
     }
-
-//    public AssetState getState() {
-//        // Logic to update the state of the AGV
-//    }
 }
