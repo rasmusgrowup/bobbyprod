@@ -13,6 +13,7 @@
 		<module>assemblystation</module>
 		<module>warehouse</module>
 		<module>common</module>
+		<module>drone</module>
 	</modules>
 
 </project>
