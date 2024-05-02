@@ -12,6 +12,6 @@ public class WarehouseMain
     public static void main( String[] args )
     {
         WarehouseService warehouseService = new WarehouseService();
-        warehouseService.checkState();
+        warehouseService.pickItem();
     }
 }

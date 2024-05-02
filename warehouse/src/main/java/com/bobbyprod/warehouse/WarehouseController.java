@@ -1,12 +1,10 @@
 package com.bobbyprod.warehouse;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -61,13 +59,18 @@ public class WarehouseController {
         {
             e.printStackTrace();
         }
+        outputString = removeBOM(outputString);
         return outputString;
     }
     public String getInventory(){
         String xmlInput =
                 "<Envelope xmlns=\"http://schemas.xmlsoap.org/soap/envelope/\">" + "<Body>" +
                         "<GetInventory xmlns=\"http://tempuri.org/\"/>" + "</Body>" + "</Envelope>";
-        return sendSoapRequest(xmlInput);
+        try {
+            return extractJsonFromXml(sendSoapRequest(xmlInput));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void pickItem(int trayId){
@@ -77,10 +80,6 @@ public class WarehouseController {
                         "</PickItem>" + "</Body>" + "</Envelope>";
 
         sendSoapRequest(xmlInput);
-        org.w3c.dom.Document document = parseXmlFile(sendSoapRequest(xmlInput));
-        NodeList nodeList = document.getElementsByTagName("PickItemResponse");
-        String webServiceResponse = nodeList.item(0).getTextContent();
-        System.out.println(webServiceResponse);
     }
 
     public void insertItem(String name, int trayId){
@@ -89,39 +88,29 @@ public class WarehouseController {
                         "<InsertItem xmlns=\"http://tempuri.org/\">" + "<trayId>" + trayId + "</trayId>" +
                         "<name>" + name + "</name>" + "</InsertItem>" + "</Body>" + "</Envelope>";
 
-        org.w3c.dom.Document document = parseXmlFile(sendSoapRequest(xmlInput));
-        NodeList nodeList = document.getElementsByTagName("InsertItemResponse");
-        String webServiceResponse = nodeList.item(0).getTextContent();
-        System.out.println(webServiceResponse);
+        sendSoapRequest(xmlInput);
     }
 
-//    private org.w3c.dom.Document parseXmlFile(String input){
-//        if (input != null && input.startsWith("\uFEFF")) {
-//            input = input.substring(1);
-//        }
-//        try {
-//            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-//            DocumentBuilder db = dbf.newDocumentBuilder();
-//            InputSource is = new InputSource(new StringReader(input));
-//            return db.parse(is);
-//        } catch (ParserConfigurationException e) {
-//            throw new RuntimeException(e);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        } catch (SAXException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
     public String extractJsonFromXml(String xml) throws Exception {
+        if (xml != null && !xml.trim().startsWith("<")) {
+            throw new IllegalArgumentException("Invalid XML content: Does not start with '<'");
+        }
+
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
-        Document doc = builder.parse(new InputSource(new StringReader(xml)));
+        InputSource source = new InputSource(new StringReader(xml.trim()));
+        Document doc = builder.parse(source);
 
         NodeList nl = doc.getElementsByTagName("GetInventoryResult");
         if (nl.getLength() > 0) {
             return nl.item(0).getTextContent();
         }
         return null; // Return null if no JSON found
+    }
+    private String removeBOM(String data) {
+        if (data != null && data.startsWith("\uFEFF")) {
+            return data.substring(1);
+        }
+        return data;
     }
 }

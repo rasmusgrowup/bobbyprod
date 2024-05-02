@@ -18,117 +18,61 @@ public class WarehouseService {
     }
 
     public void fillInventory() {
-        for (int i = 1; i <= 10; i++) {
-            client.insertItem("Drone Parts", i);
+        while(findEmptyShelfId() != -1) {
+            client.insertItem("Drone Parts", findEmptyShelfId());
         }
     }
 
-    public void pickItem(int id){
-        client.pickItem(id);
+    public void pickItem(){
+        client.pickItem(findDronePartId());
     }
 
-    public void insertItem(String name, int id){
-        client.insertItem(name,id);
+    public void insertItem(){
+        client.insertItem("Drone",findEmptyShelfId());
     }
 
-//    public void setInventoryArray(String inv) {
-//        String xmlString = inv;
-//
-//        String[] array = new String[10];
-//        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\"Content\":\"(.*?)\"");
-//        java.util.regex.Matcher matcher = pattern.matcher(xmlString);
-//        int index = 0;
-//        while (matcher.find() && index < 10) {
-//            array[index++] = matcher.group(1);
-//        }
-//        inventory = array;
-//    }
-
-    public int findEmptyShelfId(String inv) {
-        // Assuming 'in' is the JSON string embedded in the XML.
+    public int findDronePartId(){
+        String inv = client.getInventory();
         JSONObject jsonResponse = new JSONObject(inv);
         JSONArray inventoryItems = jsonResponse.getJSONArray("Inventory");
 
         for (int i = 0; i < inventoryItems.length(); i++) {
             JSONObject item = inventoryItems.getJSONObject(i);
-            String content = item.optString("Content", null); // Use null to explicitly check for empty
-            if (content == null || content.isEmpty()) { // Checks if Content is null or empty
-                return item.getInt("Id"); // Returns the ID of the first empty shelf
+            String content = item.optString("Content", null);
+            if ("Drone Parts".equals(content)) {
+                return item.getInt("Id");
             }
         }
-        return -1; // Return -1 if no empty shelf is found
+        return -1;
     }
 
-//    public AssetState checkState(){
-//        String xmlString = client.getInventory();
-//
-//        // Extracting "State" value using regular expressions
-//        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\"State\":(\\d+)");
-//        java.util.regex.Matcher matcher = pattern.matcher(xmlString);
-//        if (matcher.find()) {
-//            String stringStateValue = matcher.group(1);
-//            int stateValue = Integer.parseInt(stringStateValue);
-//            switch (stateValue){
-//                case 0:
-//                    System.out.println("State is idle");
-//                    return AssetState.IDLE;
-//                case 1:
-//                    System.out.println("State is Executing");
-//                    return AssetState.BUSY;
-//                case 2:
-//                    System.out.println("State is Error");
-//                    return AssetState.ERROR;
-//
-//            }
-//            System.out.println("State: " + stateValue);
-//        } else {
-//            System.out.println("State value not found.");
-//            return AssetState.ERROR;
-//        }
-//        return AssetState.ERROR;
-//    }
 
-//    public AssetState checkState() {
-//        String xmlString = client.getInventory();  // Assume this retrieves the XML containing JSON.
-//
-//        // First, extract the JSON string from the XML.
-//        // Assuming you know the path to the JSON, here we assume it's directly the text content of a specific element.
-//        // For real implementation, you might need to use an XML parser to safely extract this JSON string.
-//        // Here, I directly use the xmlString as JSON for demonstration.
-//
-//        JSONObject jsonResponse = new JSONObject(xmlString);  // Parse the JSON string.
-//        JSONObject inventoryResult = jsonResponse.getJSONObject("GetInventoryResult");
-//
-//        if (inventoryResult.has("State")) {
-//            int stateValue = inventoryResult.getInt("State");  // Get the state value.
-//            switch (stateValue) {
-//                case 0:
-//                    System.out.println("State is idle");
-//                    return AssetState.IDLE;
-//                case 1:
-//                    System.out.println("State is Executing");
-//                    return AssetState.BUSY;
-//                case 2:
-//                    System.out.println("State is Error");
-//                    return AssetState.ERROR;
-//            }
-//        } else {
-//            System.out.println("State value not found.");
-//            return AssetState.ERROR;  // Default or error state if 'State' key is not found.
-//        }
-//        return AssetState.ERROR;
-//    }
+    public int findEmptyShelfId() {
+        // Assuming 'in' is the JSON string embedded in the XML.
+        String inv = client.getInventory();
+        JSONObject jsonResponse = new JSONObject(inv);
+        JSONArray inventoryItems = jsonResponse.getJSONArray("Inventory");
+
+        for (int i = 0; i < inventoryItems.length(); i++) {
+            JSONObject item = inventoryItems.getJSONObject(i);
+            String content = item.optString("Content", null);
+            if (content == null || content.isEmpty()) {
+                return item.getInt("Id");
+            }
+        }
+        return -1;
+    }
 
     public AssetState checkState() {
-        String jsonPart = client.getInventory();  // This returns the XML containing JSON.
+        String jsonPart = client.getInventory();
 
         if (jsonPart == null) {
             System.out.println("JSON part not found in the XML.");
             return AssetState.ERROR;
         }
 
-        JSONObject jsonResponse = new JSONObject(jsonPart);  // Parse the extracted JSON string.
-        int stateValue = jsonResponse.getInt("State");  // Get the state value.
+        JSONObject jsonResponse = new JSONObject(jsonPart);
+        int stateValue = jsonResponse.getInt("State");
 
         switch (stateValue) {
             case 0:
@@ -143,5 +87,4 @@ public class WarehouseService {
         }
         return AssetState.ERROR;
     }
-
 }
