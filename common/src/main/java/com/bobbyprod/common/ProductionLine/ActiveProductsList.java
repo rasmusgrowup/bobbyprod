@@ -4,16 +4,19 @@ import com.bobbyprod.common.Products.Product;
 
 import java.util.LinkedList;
 
-public class ActiveProductionList {
+public class ActiveProductsList {
     private LinkedList<Product> activeProductionList = new LinkedList<Product>();
 
-    public void addToActiveProductionList(Product product){
+    public void addToActiveProductionList(Product product) {
         activeProductionList.add(product);
     }
 
-    public void removeFromActiveProductionList(Product product){
+    public void removeFromActiveProductionList(Product product) {
         activeProductionList.remove(product);
     }
 
-    public void updateP
+    public void clearActiveProductionList() {
+        activeProductionList.clear();
+    }
+
 }

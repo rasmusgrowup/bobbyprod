@@ -4,8 +4,7 @@ import com.bobbyprod.common.Assets.Asset;
 
 import java.util.ArrayList;
 
-public abstract class Product {
-    private ProductStatus status;
+public class Product {
     private int trayId;
     private String name;
     private String id;
@@ -19,13 +18,6 @@ public abstract class Product {
         this.partsList = partsList;
     }
 
-    public ProductStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ProductStatus status) {
-        this.status = status;
-    }
 
     public int getTrayId() {
         return trayId;
@@ -61,5 +53,13 @@ public abstract class Product {
 
     public ArrayList<Part> getPartsList() {
         return partsList;
+    }
+
+    public boolean isAssembled() {
+        return isAssembled;
+    }
+
+    public void setAssembled(boolean assembled) {
+        isAssembled = assembled;
     }
 }

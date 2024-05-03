@@ -3,8 +3,7 @@ package com.bobbyprod.common.Tasks;
 public enum ActionType {
     //AGV actions
     MOVE_TO_WAREHOUSE,
-    MOVE_TO_ASSEMBLY_STATION_PARTS,
-    MOVE_TO_ASSEMBLY_STATION_ITEM,
+    MOVE_TO_ASSEMBLY_STATION,
     MOVE_TO_CHARGER,
     PICK_ITEM_FROM_WAREHOUSE,
     PUT_ITEM_TO_WAREHOUSE,

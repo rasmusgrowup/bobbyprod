@@ -1,12 +1,14 @@
 package com.bobbyprod.common.Communication;
 
 import com.bobbyprod.common.Assets.Asset;
+import com.bobbyprod.common.Assets.AssetManager;
 import com.bobbyprod.common.Assets.AssetType;
 import com.bobbyprod.common.Interfaces.IMediator;
+import com.bobbyprod.common.ProductionLine.ActivePartsList;
+import com.bobbyprod.common.ProductionLine.ActiveProductsList;
 import com.bobbyprod.common.ProductionLine.ProductionQueue;
+import com.bobbyprod.common.Products.Part;
 import com.bobbyprod.common.Products.Product;
-import com.bobbyprod.common.Products.ProductStatus;
-import com.bobbyprod.common.States.AssetState;
 import com.bobbyprod.common.Tasks.ActionType;
 import com.bobbyprod.common.Tasks.Task;
 import org.springframework.stereotype.Component;
@@ -18,38 +20,37 @@ public class Mediator implements IMediator {
     private List<Asset> assets; // List of all registered assets
     private Map<Asset, Task> assetTasks; // Map to keep track of current tasks for each asset
     private ProductionQueue productionQueue;// Queue to manage production of products
+    private ActiveProductsList activeProductsList; // List of products currently in production
+    private ActivePartsList activePartsList; // List of parts currently in production
 
     public Mediator() {
         assets = new ArrayList<>();
         assetTasks = new HashMap<>();
         productionQueue = new ProductionQueue();
+        activeProductsList = new ActiveProductsList();
+        activePartsList = new ActivePartsList();
     }
 
     // Registers assets with the mediator
     public void registerAsset(Asset asset) {
-        assets.add(asset);
-        assetTasks.put(asset, null); // Initialize with no task assigned
+        if (!assets.contains(asset)) {
+            assets.add(asset);
+            assetTasks.put(asset, null);
+        }
     }
 
     public void startProduction() {
-        // While the production queue is not empty
         while (!productionQueue.isEmpty()) {
-            // Get the first product in the queue
             Product product = productionQueue.getFirstInQueue();
-
-            // Create a new task to pick item from warehouse
-            Task task = new Task();
-            task.setActionType(ActionType.PICK_ITEM_FROM_WAREHOUSE);
-            task.setCompatibleAssetType(AssetType.WAREHOUSE); // WAREHOUSE type assets are responsible for picking items
-
-            // Find an available asset to assign the task
-            for (Asset asset : assets) {
-                if (asset.getState() == AssetState.IDLE && asset.getType() == AssetType.WAREHOUSE) {
-                    assignTask(asset, task);
-                    break;
+            activeProductsList.addToActiveProductionList(product);
+            for (Part part : product.getPartsList()) {
+                activePartsList.addToActiveProductionList(part);
+                Task task = new Task(ActionType.PICK_ITEM, AssetType.WAREHOUSE, part);
+                Asset warehouseAsset = AssetManager.findAvailableAsset(assets,AssetType.WAREHOUSE);
+                if (warehouseAsset != null) {
+                    assignTask(warehouseAsset, task);
                 }
             }
-            // Remove the product from the queue as it is now being processed
             productionQueue.removeFromQueue(product);
         }
     }
@@ -77,23 +78,101 @@ public class Mediator implements IMediator {
                 break;
         }
     }
-
     private void fleetManagement(Asset asset, Task task) {
         System.out.println(asset.getName() + " completed task: " + task.getActionType());
-        // Determine next step based on the task completed
-        //Combined tasks:
         switch (task.getActionType()) {
-            case MOVE_TO_WAREHOUSE:
-                if (asset.getType() == AssetType.AGV && asset.getState() == AssetState.IDLE) {
-                    Task newTask = new Task();
-                    newTask.setActionType(ActionType.MOVE_TO_ASSEMBLY_STATION_PARTS);
-                    assignTask(asset, newTask); // Assign the task to the same AGV
-                    break;
+            case PICK_ITEM:
+                if (task.getPart() != null) {
+                    // Step 3: Part is picked up from warehouse by AGV
+                    task.getPart().setLocation(asset);
+                    Task moveToAssemblyTask = new Task(ActionType.MOVE_TO_WAREHOUSE, AssetType.AGV, task.getPart());
+                    assignTask(asset, moveToAssemblyTask);
                 }
-            case MOVE_TO_ASSEMBLY_STATION_PARTS:
+                break;
+            case MOVE_TO_WAREHOUSE:
+                if (task.getPart() != null) {
+                    // Step 3: Part is picked up from warehouse by AGV
+                    task.getPart().setLocation(asset);
+                    Task moveToAssemblyTask = new Task(ActionType.PICK_ITEM_FROM_WAREHOUSE, AssetType.AGV, task.getPart());
+                    assignTask(asset, moveToAssemblyTask);
+                } else if (task.getProduct() != null) {
+                    // Step 9: AGV delivers product to warehouse
+                    Asset warehouse = AssetManager.findAvailableAsset(assets, AssetType.WAREHOUSE);
+                    if (warehouse != null) {
+                        task.getProduct().setLocation(warehouse);
+                        Task putItemToWarehouseTask = new Task(ActionType.PUT_ITEM_TO_WAREHOUSE, AssetType.WAREHOUSE, task.getProduct());
+                        assignTask(warehouse, putItemToWarehouseTask);
+                    }
+                }
+                break;
+            case PICK_ITEM_FROM_WAREHOUSE:
+                if (task.getPart() != null) {
+                    // Step 2: Part is picked from warehouse
+                    Asset agv = AssetManager.findAvailableAsset(assets, AssetType.AGV);
+                    if (agv != null) {
+                        task.getPart().setLocation(agv);
+                        Task moveFromWarehouseTask = new Task(ActionType.MOVE_TO_ASSEMBLY_STATION, AssetType.AGV, task.getPart());
+                        assignTask(agv, moveFromWarehouseTask);
+                    }
+                }
+                break;
+            case MOVE_TO_ASSEMBLY_STATION:
+                if (task.getPart() != null) {
+                    // Step 3: Part is picked up from warehouse by AGV
+                    task.getPart().setLocation(asset);
+                    Task moveToAssemblyTask = new Task(ActionType.PICK_ITEM_FROM_ASSEMBLY_STATION, AssetType.AGV, task.getPart());
+                    assignTask(asset, moveToAssemblyTask);
+                } else if (task.getProduct() != null) {
+                    // Step 9: AGV delivers product to warehouse
+                    Asset warehouse = AssetManager.findAvailableAsset(assets, AssetType.WAREHOUSE);
+                    if (warehouse != null) {
+                        task.getProduct().setLocation(warehouse);
+                        Task putItemToWarehouseTask = new Task(ActionType.PUT_ITEM_TO_ASSEMBLY_STATION, AssetType.WAREHOUSE, task.getProduct());
+                        assignTask(warehouse, putItemToWarehouseTask);
+                    }
+                }
+                break;
+            case PUT_ITEM_TO_ASSEMBLY_STATION:
+                if (task.getPart() != null) {
+                    // Step 4: AGV transports parts to assembly station
+                    Asset assemblyStation = AssetManager.findAvailableAsset(assets, AssetType.ASSEMBLY_STATION);
+                    if (assemblyStation != null) {
+                        task.getPart().setLocation(assemblyStation);
+                        Task assembleTask = new Task(ActionType.ASSEMBLE_ITEM, AssetType.ASSEMBLY_STATION, task.getPart());
+                        assignTask(assemblyStation, assembleTask);
+                    }
+                }
+            case ASSEMBLE_ITEM:
+                if (task.getPart() != null) {
+                    // Step 6: Assembly station assembles the parts into a product
+                    Product product = new Product(task.getPart().getName(), task.getPart().getId(), asset, new ArrayList<>(Arrays.asList(task.getPart())));
+                    product.setAssembled(true);
+                    product.setLocation(asset);
+                    activeProductsList.addToActiveProductionList(product);
+                    Task moveToWarehouseTask = new Task(ActionType.MOVE_TO_ASSEMBLY_STATION, AssetType.AGV, product);
+                    assignTask(asset, moveToWarehouseTask);
+                }
+                break;
+            case PICK_ITEM_FROM_ASSEMBLY_STATION:
+                if (task.getPart() != null) {
+                    // Step 2: Part is picked from warehouse
+                    Asset agv = AssetManager.findAvailableAsset(assets, AssetType.AGV);
+                    if (agv != null) {
+                        task.getPart().setLocation(agv);
+                        Task moveFromWarehouseTask = new Task(ActionType.MOVE_TO_WAREHOUSE, AssetType.AGV, task.getPart());
+                        assignTask(agv, moveFromWarehouseTask);
+                    }
+                }
+                break;
+            case PUT_ITEM_TO_WAREHOUSE:
+                if (task.getProduct() != null) {
+                    // Step 10: Warehouse stores the product in storage
+                    task.getProduct().setLocation(asset);
+                    System.out.println("Product stored in warehouse: " + task.getProduct().getName());
+                }
+                break;
         }
     }
-
     private void assignTask(Asset asset, Task task) {
         System.out.println("Assigning task " + task.getActionType() + " to " + asset.getName());
         assetTasks.put(asset, task);
