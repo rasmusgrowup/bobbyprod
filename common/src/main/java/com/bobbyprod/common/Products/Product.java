@@ -1,19 +1,39 @@
 package com.bobbyprod.common.Products;
 
+import com.bobbyprod.common.Assets.Asset;
+
 import java.util.ArrayList;
 
 public abstract class Product {
     private ProductStatus status;
+    private int trayId;
     private String name;
     private String id;
-    private String location;
+    private Asset location;
     private ArrayList<Part> partsList = new ArrayList<Part>();
-    public Product(String name, String id, String location,  ArrayList<Part> partsList) {
+    public Product(String name, String id, Asset location,  ArrayList<Part> partsList) {
         this.name = name;
         this.id = id;
         this.location = location;
         this.partsList = partsList;
     }
+
+    public ProductStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ProductStatus status) {
+        this.status = status;
+    }
+
+    public int getTrayId() {
+        return trayId;
+    }
+
+    public void setTrayId(int trayId) {
+        this.trayId = trayId;
+    }
+
     public String getName() {
         return name;
     }
@@ -30,11 +50,11 @@ public abstract class Product {
         this.id = id;
     }
 
-    public String getLocation() {
+    public Asset getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(Asset location) {
         this.location = location;
     }
 

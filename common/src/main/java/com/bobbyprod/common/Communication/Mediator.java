@@ -3,30 +3,56 @@ package com.bobbyprod.common.Communication;
 import com.bobbyprod.common.Assets.Asset;
 import com.bobbyprod.common.Assets.AssetType;
 import com.bobbyprod.common.Interfaces.IMediator;
+import com.bobbyprod.common.ProductionLine.ProductionQueue;
+import com.bobbyprod.common.Products.Product;
+import com.bobbyprod.common.Products.ProductStatus;
 import com.bobbyprod.common.States.AssetState;
 import com.bobbyprod.common.Tasks.ActionType;
 import com.bobbyprod.common.Tasks.Task;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class Mediator implements IMediator {
     private List<Asset> assets; // List of all registered assets
     private Map<Asset, Task> assetTasks; // Map to keep track of current tasks for each asset
+    private ProductionQueue productionQueue;// Queue to manage production of products
 
     public Mediator() {
         assets = new ArrayList<>();
         assetTasks = new HashMap<>();
+        productionQueue = new ProductionQueue();
     }
 
     // Registers assets with the mediator
     public void registerAsset(Asset asset) {
         assets.add(asset);
         assetTasks.put(asset, null); // Initialize with no task assigned
+    }
+
+    public void startProduction() {
+        // While the production queue is not empty
+        while (!productionQueue.isEmpty()) {
+            // Get the first product in the queue
+            Product product = productionQueue.getFirstInQueue();
+
+            // Create a new task to pick item from warehouse
+            Task task = new Task();
+            task.setActionType(ActionType.PICK_ITEM_FROM_WAREHOUSE);
+            task.setCompatibleAssetType(AssetType.WAREHOUSE); // WAREHOUSE type assets are responsible for picking items
+
+            // Find an available asset to assign the task
+            for (Asset asset : assets) {
+                if (asset.getState() == AssetState.IDLE && asset.getType() == AssetType.WAREHOUSE) {
+                    assignTask(asset, task);
+                    break;
+                }
+            }
+
+            // Remove the product from the queue as it is now being processed
+            productionQueue.removeFromQueue(product);
+        }
     }
 
     // Handles notifications from assets. Decides action based on event type and asset type.

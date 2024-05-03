@@ -1,11 +1,12 @@
 package com.bobbyprod.common.Tasks;
 
 import com.bobbyprod.common.Assets.AssetType;
+import com.bobbyprod.common.Products.Product;
 
 public class Task {
     private ActionType actionType;
     private AssetType compatibleAssetType;
-    //private String targetLocation;
+    private Product product;
 
     public ActionType getActionType() {
         return actionType;
@@ -21,5 +22,12 @@ public class Task {
 
     public void setCompatibleAssetType(AssetType compatibleAssetType) {
         this.compatibleAssetType = compatibleAssetType;
+    }
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 }
