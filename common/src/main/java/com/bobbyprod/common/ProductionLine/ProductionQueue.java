@@ -9,7 +9,6 @@ public class ProductionQueue {
 
     public void addToQueue (Product product){
         queue.add(product);
-
     }
     public void removeFromQueue (Product product){
         queue.remove(product);

@@ -10,8 +10,9 @@ public abstract class Product {
     private String name;
     private String id;
     private Asset location;
+    private boolean isAssembled;
     private ArrayList<Part> partsList = new ArrayList<Part>();
-    public Product(String name, String id, Asset location,  ArrayList<Part> partsList) {
+    public Product(String name, String id, Asset location, ArrayList<Part> partsList) {
         this.name = name;
         this.id = id;
         this.location = location;
