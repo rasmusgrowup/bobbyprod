@@ -49,7 +49,6 @@ public class Mediator implements IMediator {
                     break;
                 }
             }
-
             // Remove the product from the queue as it is now being processed
             productionQueue.removeFromQueue(product);
         }
