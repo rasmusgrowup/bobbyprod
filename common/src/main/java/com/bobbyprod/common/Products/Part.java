@@ -2,22 +2,17 @@ package com.bobbyprod.common.Products;
 
 import com.bobbyprod.common.Assets.Asset;
 
-import java.util.ArrayList;
-
-public class Product {
-    private int trayId;
+public abstract class Part {
     private String name;
     private String id;
+    private int trayId;
     private Asset location;
-    private boolean isAssembled;
-    private ArrayList<Part> partsList = new ArrayList<Part>();
-    public Product(String name, String id, Asset location, ArrayList<Part> partsList) {
+
+    public Part(String name, String id, int trayId) {
         this.name = name;
         this.id = id;
-        this.location = location;
-        this.partsList = partsList;
+        this.trayId = trayId;
     }
-
 
     public int getTrayId() {
         return trayId;
@@ -43,23 +38,7 @@ public class Product {
         this.id = id;
     }
 
-    public Asset getLocation() {
-        return location;
-    }
-
     public void setLocation(Asset location) {
         this.location = location;
-    }
-
-    public ArrayList<Part> getPartsList() {
-        return partsList;
-    }
-
-    public boolean isAssembled() {
-        return isAssembled;
-    }
-
-    public void setAssembled(boolean assembled) {
-        isAssembled = assembled;
     }
 }

@@ -10,5 +10,9 @@ public enum ActionType {
     PICK_ITEM_FROM_ASSEMBLY_STATION,
     PUT_ITEM_TO_ASSEMBLY_STATION,
     //AssemblyStation actions
-    ASSEMBLE_ITEM
+    ASSEMBLE_ITEM,
+    //Warehouse actions
+    INSERT_ITEM,
+    PICK_ITEM,
+    FILL_PARTS,
 }
