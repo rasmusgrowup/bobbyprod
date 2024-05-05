@@ -1,29 +1,32 @@
 package com.bobbyprod.core;
 
-import com.bobbyprod.agv.Agv;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
 
-@RestController
+//@RestController
+@Controller
 @SpringBootApplication(scanBasePackages = "com.bobbyprod")
 @EnableScheduling
 public class AppApplication {
-	private final Agv agv;
+//	private final Agv agv;
 
-	@Autowired
-	public AppApplication(Agv agv) {
-		this.agv = agv;
-	}
+//	@Autowired
+//	public AppApplication(Agv agv) {
+//		this.agv = agv;
+//	}
+//
+//
+//	@GetMapping("/")
+//	public String home() {
+//		return agv.getState().toString();
+//	}
 
-
-	@GetMapping("/")
-	public String home() {
-		return agv.getState().toString();
-	}
-
+//	@GetMapping("/")
+//	public String home() {
+//		return "index";
+//	}
 	public static void main(String[] args) {
 		SpringApplication.run(AppApplication.class, args);
 	}

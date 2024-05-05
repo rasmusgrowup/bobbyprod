@@ -102,14 +102,14 @@ public class AgvController implements Observable {
 
     public void pollAgvStatus() {
         try {
-            System.out.println("About to make a request to AGV");
+            //System.out.println("About to make a request to AGV");
             ResponseEntity<Map> responseEntity = restTemplate.getForEntity("http://localhost:8082/v1/status", Map.class);
             Map<String, Object> responseMap = responseEntity.getBody();
-            System.out.println("Received response from AGV: " + responseMap);
+            //System.out.println("Received response from AGV: " + responseMap);
             this.batteryLevel = (int) responseMap.get("battery");
             int stateInt = (int) responseMap.get("state");
             this.state = stateInt == 1 ? AssetState.IDLE : stateInt == 2 ? AssetState.BUSY : AssetState.CHARGING;
-            System.out.println("Updated battery level and state");
+            //System.out.println("Updated battery level and state");
             notifyObservers();
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             System.out.println("Error polling AGV status");

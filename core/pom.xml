@@ -2,14 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.2</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <groupId>com.bobbyprod</groupId>
+        <artifactId>production-line-app</artifactId>
+        <version>0.0.1</version>
     </parent>
 
-    <groupId>com.bobbyprod</groupId>
+    <groupId>com.bobbyprod.core</groupId>
     <artifactId>core</artifactId>
     <packaging>jar</packaging>
     <name>core</name>
@@ -31,27 +31,21 @@
         </dependency>
 
         <dependency>
-            <groupId>com.bobbyprod</groupId>
+            <groupId>com.bobbyprod.agv</groupId>
             <artifactId>agv</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
-            <scope>test</scope>
+            <groupId>com.bobbyprod.assemblystation</groupId>
+            <artifactId>assemblystation</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>com.bobbyprod</groupId>
-            <artifactId>assemblystation</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <groupId>com.bobbyprod.frontend</groupId>
+            <artifactId>frontend</artifactId>
+            <version>0.0.1</version>
         </dependency>
     </dependencies>
 
