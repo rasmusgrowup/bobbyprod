@@ -53,7 +53,6 @@ public class AssemblyStation extends Asset {
             return false;
         }
     }
-
     @Override
     public AssetState getState() {
         return state;
