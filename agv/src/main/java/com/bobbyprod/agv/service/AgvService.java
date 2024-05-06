@@ -10,11 +10,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class AgvService {
     private final AgvController agvController;
+    private final Agv agv;
     private AssetState state;
 
     @Autowired
-    public AgvService(AgvController agvController) {
+    public AgvService(AgvController agvController, Agv agv) {
         this.agvController = agvController;
+        this.agv = agv;
     }
 
     public boolean handleTask(Task task) {
@@ -68,7 +70,15 @@ public class AgvService {
                 if (result) {
                     result = agvController.changeState(2);
                 }
+                break;
+            default:
+                System.out.println("Unknown action type: " + task.getActionType());
         }
+
+        if (agvController.getBatteryLevel() <= 5) {
+            agvController.changeState(3);
+        }
+
         return result;
     }
 }
