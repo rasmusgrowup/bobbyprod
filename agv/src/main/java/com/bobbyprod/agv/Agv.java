@@ -20,7 +20,6 @@ public class Agv extends Asset implements Observer {
 
     public Agv(IMediator mediator) {
         super("AGV", "AGV-1", AssetType.AGV, mediator);
-        this.state = AssetState.IDLE;
         this.batteryLevel = 100;
     }
 
@@ -33,8 +32,8 @@ public class Agv extends Asset implements Observer {
     public void setAgvController(AgvController agvController) {
         this.agvController = agvController;
         this.agvController.addObserver(this);
+        this.state = agvController.getState();
     }
-
 
     @Override
     public boolean processTask(Task task) {
@@ -49,11 +48,6 @@ public class Agv extends Asset implements Observer {
     @Override
     public void setState(AssetState state) {
         this.state = state;
-    }
-
-    @Override
-    public void updateState(AssetState state) {
-        setState(state);
     }
 
     public int getBatteryLevel() {

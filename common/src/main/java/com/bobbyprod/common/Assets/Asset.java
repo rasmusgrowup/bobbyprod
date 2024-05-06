@@ -42,5 +42,4 @@ public abstract class Asset {
     public abstract boolean processTask(Task task);
     public abstract AssetState getState();
     public abstract void setState(AssetState state);
-    public abstract void updateState(AssetState state);
 }
