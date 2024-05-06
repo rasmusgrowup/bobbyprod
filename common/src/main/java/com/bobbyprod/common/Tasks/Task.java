@@ -11,6 +11,7 @@ import com.bobbyprod.common.Products.Product;
  */
 public class Task {
     private ActionType actionType;
+    private TaskStatus status;
     private AssetType compatibleAssetType;
     private Product product;
     private Part part;
@@ -31,6 +32,7 @@ public class Task {
      */
     public Task(ActionType actionType, AssetType compatibleAssetType, Product product) {
         this.actionType = actionType;
+        this.status = TaskStatus.TASK_UNASSIGNED;
         this.compatibleAssetType = compatibleAssetType;
         this.product = product;
         this.part = null; // Ensure part is null when product is used
@@ -84,5 +86,13 @@ public class Task {
 
     public void setCompatibleAssetType(AssetType compatibleAssetType) {
         this.compatibleAssetType = compatibleAssetType;
+    }
+
+    public TaskStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(TaskStatus status) {
+        this.status = status;
     }
 }

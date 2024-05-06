@@ -9,13 +9,13 @@ public abstract class Asset {
     private String name;
     private final AssetType type;
     private AssetState state;
-    protected IMediator mediator;
+    //protected IMediator mediator;
 
-    public Asset(String id, String name, AssetType type, IMediator mediator) {
+    public Asset(String id, String name, AssetType type/*, IMediator mediator*/) {
         this.id = id;
         this.name = name;
         this.type = type;
-        this.mediator = mediator;
+        //this.mediator = mediator;
     }
 
     public AssetType getType() {
@@ -40,6 +40,12 @@ public abstract class Asset {
     }
 
     public abstract boolean processTask(Task task);
-    public abstract AssetState getState();
-    public abstract void setState(AssetState state);
+
+    public AssetState getState() {
+        return state;
+    };
+
+    public void setState(AssetState state) {
+        this.state = state;
+    };
 }
