@@ -57,22 +57,22 @@ public class Mediator implements IMediator {
 
     // Handles notifications from assets. Decides action based on event type and asset type.
     @Override
-    public void notify(Asset asset, String event, Task task) {
+    public void notify(Asset asset, Task task) {
         if (!assets.contains(asset)) {
             System.out.println("Asset not registered: " + asset.getName());
             return;
         }
-        switch (event) {
-            case "TaskAccepted":
+        switch (task.getStatus()) {
+            case TASK_ACCEPTED:
                 System.out.println(asset.getName() + " accepted task: " + task.getActionType());
                 assetTasks.put(asset, task);
                 break;
-            case "TaskCompleted":
+            case TASK_COMPLETED:
                 System.out.println(asset.getName() + " completed task: " + task.getActionType());
                 assetTasks.put(asset, null); // Clear the task as it is completed
                 fleetManagement(asset, task);
                 break;
-            case "TaskFailed":
+            case TASK_FAILED:
                 System.out.println(asset.getName() + " failed task: " + task.getActionType());
                 assetTasks.put(asset, null); // Clear the task on failure
                 break;

@@ -40,6 +40,12 @@ public abstract class Asset {
     }
 
     public abstract boolean processTask(Task task);
-    public abstract AssetState getState();
-    public abstract void setState(AssetState state);
+
+    public AssetState getState() {
+        return state;
+    };
+
+    public void setState(AssetState state) {
+        this.state = state;
+    };
 }
