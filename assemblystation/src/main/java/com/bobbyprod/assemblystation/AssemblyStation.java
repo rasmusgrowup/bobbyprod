@@ -62,10 +62,5 @@ public class AssemblyStation extends Asset {
     public void setState(AssetState state) {
         this.state = state;
     }
-
-    @Override
-    public void updateState(AssetState state) {
-        setState(state);
-    }
 }
 
