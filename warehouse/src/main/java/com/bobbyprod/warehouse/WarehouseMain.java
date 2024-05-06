@@ -11,7 +11,8 @@ public class WarehouseMain
 {
     public static void main( String[] args )
     {
-        WarehouseService warehouseService = new WarehouseService();
-        warehouseService.pickItem();
+        WarehouseController warehousc = new WarehouseController();
+        System.out.println(warehousc.pickItem(1));
+        //System.out.println(warehousc.insertItem("name",1));
     }
 }

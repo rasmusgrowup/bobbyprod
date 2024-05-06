@@ -73,22 +73,30 @@ public class WarehouseController {
         }
     }
 
-    public void pickItem(int trayId){
+    public boolean pickItem(int trayId){
         String xmlInput =
                 "<Envelope xmlns=\"http://schemas.xmlsoap.org/soap/envelope/\">" + "<Body>" +
                         "<PickItem xmlns=\"http://tempuri.org/\">" + "<trayId>" + trayId + "</trayId>" +
                         "</PickItem>" + "</Body>" + "</Envelope>";
 
-        sendSoapRequest(xmlInput);
+        String message = sendSoapRequest(xmlInput);
+        if(message.equals("<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">  <s:Body>    <PickItemResponse xmlns=\"http://tempuri.org/\">      <PickItemResult>Received pick operation.</PickItemResult>    </PickItemResponse>  </s:Body></s:Envelope>")){
+            return true;
+        } else return false;
     }
 
-    public void insertItem(String name, int trayId){
+    public boolean insertItem(String name, int trayId){
         String xmlInput =
                 "<Envelope xmlns=\"http://schemas.xmlsoap.org/soap/envelope/\">" + "<Body>" +
                         "<InsertItem xmlns=\"http://tempuri.org/\">" + "<trayId>" + trayId + "</trayId>" +
                         "<name>" + name + "</name>" + "</InsertItem>" + "</Body>" + "</Envelope>";
 
-        sendSoapRequest(xmlInput);
+        String message = sendSoapRequest(xmlInput);
+        if(message.equals("<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">  <s:Body>    <InsertItemResponse xmlns=\"http://tempuri.org/\">      <InsertItemResult>Received insert operation.</InsertItemResult>    </InsertItemResponse>  </s:Body></s:Envelope>")){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public String extractJsonFromXml(String xml) throws Exception {

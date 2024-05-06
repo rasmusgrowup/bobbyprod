@@ -12,29 +12,22 @@ public class Warehouse extends Asset {
 
     public Warehouse(String id, String name, IMediator mediator){
         super(id, name, AssetType.WAREHOUSE, mediator);
-        wService.clearInventory();
-        wService.fillInventory();
         this.state = wService.checkState();
         this.wService = new WarehouseService();
     }
 
     @Override
     public boolean processTask(Task task) {
-        return false;
+        return wService.handleTask(task);
     }
 
     @Override
     public AssetState getState() {
-        return null;
+        return state;
     }
 
     @Override
     public void setState(AssetState state) {
-
-    }
-
-    @Override
-    public void updateState(AssetState state) {
-
+        this.state = state;
     }
 }

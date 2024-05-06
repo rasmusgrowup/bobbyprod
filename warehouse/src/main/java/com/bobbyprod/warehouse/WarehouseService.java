@@ -1,6 +1,7 @@
 package com.bobbyprod.warehouse;
 
 import com.bobbyprod.common.States.AssetState;
+import com.bobbyprod.common.Tasks.Task;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -19,21 +20,24 @@ public class WarehouseService {
         }
     }
 
-    public void fillInventory() {
+    public boolean fillInventory(String name) {
         while(findEmptyShelfId() != -1) {
-            client.insertItem("Drone Parts", findEmptyShelfId());
+            if(!client.insertItem(name, findEmptyShelfId())){
+                return false;
+            }
         }
+        return true;
     }
 
-    public void pickItem(){
-        client.pickItem(findDronePartId());
+    public boolean pickItem(String name){
+        return client.pickItem(findDronePartId(name));
     }
 
-    public void insertItem(){
-        client.insertItem("Drone",findEmptyShelfId());
+    public boolean insertItem(String name){
+        return client.insertItem(name, findEmptyShelfId());
     }
 
-    public int findDronePartId(){
+    public int findDronePartId(String name){
         String inv = client.getInventory();
         JSONObject jsonResponse = new JSONObject(inv);
         JSONArray inventoryItems = jsonResponse.getJSONArray("Inventory");
@@ -41,7 +45,7 @@ public class WarehouseService {
         for (int i = 0; i < inventoryItems.length(); i++) {
             JSONObject item = inventoryItems.getJSONObject(i);
             String content = item.optString("Content", null);
-            if ("Drone Parts".equals(content)) {
+            if (name.equals(content)) {
                 return item.getInt("Id");
             }
         }
@@ -87,5 +91,34 @@ public class WarehouseService {
                 return AssetState.ERROR;
         }
         return AssetState.ERROR;
+    }
+
+    public boolean handleTask(Task task){
+        boolean result = false;
+        switch (task.getActionType()){
+            case INSERT_ITEM:
+                if(task.getPart() == null){
+                    result = insertItem(task.getProduct().getName());
+                }
+                else if(task.getProduct() == null){
+                    result = insertItem(task.getPart().getName());
+                }
+                break;
+            case PICK_ITEM:
+                if(task.getProduct() == null){
+                    result = pickItem(task.getPart().getName());
+                }
+                else if(task.getPart() == null){
+                    result = pickItem(task.getProduct().getName());
+                }
+                break;
+            case FILL_PARTS:
+                clearInventory();
+                result = fillInventory(task.getPart().getName());
+                break;
+            default:
+                System.out.println("Unknown action type" + task.getActionType());
+        }
+        return result;
     }
 }
