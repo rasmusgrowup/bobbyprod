@@ -33,8 +33,8 @@ public class WarehouseService {
         return client.pickItem(findDronePartId(name));
     }
 
-    public boolean insertItem(String name){
-        return client.insertItem(name, findEmptyShelfId());
+    public boolean insertItem(String name,int id){
+        return client.insertItem(name,id);
     }
 
     public int findDronePartId(String name){
@@ -98,10 +98,14 @@ public class WarehouseService {
         switch (task.getActionType()){
             case INSERT_ITEM:
                 if(task.getPart() == null){
-                    result = insertItem(task.getProduct().getName());
+                    int emptyShelf = findEmptyShelfId();
+                    task.getProduct().setTrayId(emptyShelf);
+                    result = insertItem(task.getProduct().getName(),emptyShelf);
                 }
                 else if(task.getProduct() == null){
-                    result = insertItem(task.getPart().getName());
+                    int emptyShelf = findEmptyShelfId();
+                    task.getPart().setTrayId(emptyShelf);
+                    result = insertItem(task.getPart().getName(),emptyShelf);
                 }
                 break;
             case PICK_ITEM:

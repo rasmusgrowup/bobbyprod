@@ -1,5 +1,10 @@
 package com.bobbyprod.warehouse;
 
+import com.bobbyprod.common.Interfaces.Observable;
+import com.bobbyprod.common.Interfaces.Observer;
+import com.bobbyprod.common.States.AssetState;
+import org.json.JSONObject;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -9,9 +14,22 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-public class WarehouseController {
-    String wsURL = "http://localhost:8081/Service.asmx";
+public class WarehouseController implements Observable {
+    private String wsURL = "http://localhost:8081/Service.asmx";
+    private List<Observer> observers;
+    private AssetState state;
+    private final ScheduledExecutorService executorService;
+
+    public WarehouseController(){
+        this.observers = new ArrayList<>();
+        executorService = Executors.newSingleThreadScheduledExecutor();
+    }
 
     public String sendSoapRequest(String xmlInput){
         URL url = null;
@@ -121,4 +139,44 @@ public class WarehouseController {
         }
         return data;
     }
+
+    @Override
+    public void addObserver(Observer observer) {
+        if (!observers.contains(observer)) {
+            observers.add(observer);
+        }
+    }
+
+    @Override
+    public void removeObserver(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for(Observer observer: observers){
+            observer.update();
+        }
+    }
+
+    public void pollWarehouseStatus(){
+        String jsonPart = getInventory();
+
+        if (jsonPart == null) {
+            System.out.println("JSON part not found in the XML.");
+            this.state = AssetState.ERROR;
+        }
+
+        JSONObject jsonResponse = new JSONObject(jsonPart);
+        int stateValue = jsonResponse.getInt("State");
+
+        this.state = stateValue == 0 ? AssetState.IDLE : stateValue == 1 ? AssetState.BUSY : AssetState.ERROR;
+        notifyObservers();
+    }
+
+    @Scheduled(fixedRate = 1000)
+    public void scheduledPolling(){
+        executorService.scheduleAtFixedRate(this::pollWarehouseStatus,0,1, TimeUnit.SECONDS);
+    }
+
 }
