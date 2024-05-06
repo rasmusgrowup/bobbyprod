@@ -3,7 +3,9 @@ package com.bobbyprod.warehouse;
 import com.bobbyprod.common.States.AssetState;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.stereotype.Service;
 
+@Service
 public class WarehouseService {
     private WarehouseController client;
 
@@ -52,7 +54,6 @@ public class WarehouseService {
         String inv = client.getInventory();
         JSONObject jsonResponse = new JSONObject(inv);
         JSONArray inventoryItems = jsonResponse.getJSONArray("Inventory");
-
         for (int i = 0; i < inventoryItems.length(); i++) {
             JSONObject item = inventoryItems.getJSONObject(i);
             String content = item.optString("Content", null);
