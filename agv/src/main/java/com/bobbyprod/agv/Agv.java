@@ -9,6 +9,7 @@ import com.bobbyprod.common.Interfaces.IMediator;
 import com.bobbyprod.common.Interfaces.Observer;
 import com.bobbyprod.common.States.AssetState;
 import com.bobbyprod.common.Tasks.Task;
+import com.bobbyprod.common.Tasks.TaskStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -39,24 +40,17 @@ public class Agv extends Asset implements Observer {
 
     @Override
     public boolean processTask(Task task) {
-        mediator.notify(this, "TaskAccepted", task);
+        task.setStatus(TaskStatus.TASK_ACCEPTED);
+        mediator.notify(this, task);
         if (agvService.handleTask(task)) {
-            mediator.notify(this, "TaskCompleted", task);
+            task.setStatus(TaskStatus.TASK_COMPLETED);
+            mediator.notify(this, task);
             return true;
         } else {
-            mediator.notify(this, "TaskFailed", task);
+            task.setStatus(TaskStatus.TASK_FAILED);
+            mediator.notify(this, task);
             return false;
         }
-    }
-
-    @Override
-    public AssetState getState() {
-        return state;
-    }
-
-    @Override
-    public void setState(AssetState state) {
-        this.state = state;
     }
 
     public int getBatteryLevel() {
