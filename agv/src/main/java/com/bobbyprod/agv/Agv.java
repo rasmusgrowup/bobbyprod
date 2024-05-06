@@ -65,6 +65,6 @@ public class Agv extends Asset implements Observer {
     public void update() {
         setState(agvController.getState());
         setBatteryLevel(batteryLevel = agvController.getBatteryLevel());
-        System.out.println("AGV state: " + state + ", battery level: " + batteryLevel + "%");
+        //System.out.println("AGV state: " + state + ", battery level: " + batteryLevel + "%");
     }
 }

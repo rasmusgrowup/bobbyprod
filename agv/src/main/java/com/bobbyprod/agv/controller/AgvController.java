@@ -2,7 +2,6 @@ package com.bobbyprod.agv.controller;
 
 import com.bobbyprod.agv.model.AgvChangeState;
 import com.bobbyprod.agv.model.AgvLoadProgram;
-import com.bobbyprod.agv.model.AgvResponse;
 import com.bobbyprod.common.Interfaces.Observable;
 import com.bobbyprod.common.Interfaces.Observer;
 import com.bobbyprod.common.States.AssetState;
