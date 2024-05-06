@@ -10,13 +10,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class AgvService {
     private final AgvController agvController;
-    private final Agv agv;
     private AssetState state;
 
     @Autowired
-    public AgvService(AgvController agvController, Agv agv) {
+    public AgvService(AgvController agvController) {
         this.agvController = agvController;
-        this.agv = agv;
     }
 
     public boolean handleTask(Task task) {
