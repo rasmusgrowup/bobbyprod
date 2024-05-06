@@ -2,6 +2,9 @@ package com.bobbyprod.agv.service;
 
 import com.bobbyprod.agv.Agv;
 import com.bobbyprod.agv.controller.AgvController;
+import com.bobbyprod.common.Assets.Asset;
+import com.bobbyprod.common.Communication.Mediator;
+import com.bobbyprod.common.Interfaces.IMediator;
 import com.bobbyprod.common.States.AssetState;
 import com.bobbyprod.common.Tasks.Task;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +77,8 @@ public class AgvService {
         }
 
         if (agvController.getBatteryLevel() <= 5) {
-            agvController.changeState(3);
+            agvController.loadProgram("MoveToChargerOperation", 1);
+            agvController.changeState(2);
         }
 
         return result;

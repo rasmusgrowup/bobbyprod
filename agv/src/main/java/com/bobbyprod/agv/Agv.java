@@ -4,6 +4,7 @@ import com.bobbyprod.agv.controller.AgvController;
 import com.bobbyprod.agv.service.AgvService;
 import com.bobbyprod.common.Assets.Asset;
 import com.bobbyprod.common.Assets.AssetType;
+import com.bobbyprod.common.Communication.Mediator;
 import com.bobbyprod.common.Interfaces.IMediator;
 import com.bobbyprod.common.Interfaces.Observer;
 import com.bobbyprod.common.States.AssetState;
@@ -17,9 +18,10 @@ public class Agv extends Asset implements Observer {
     private AgvController agvController;
     private AssetState state;
     private int batteryLevel;
+    protected Mediator mediator;
 
-    public Agv(IMediator mediator) {
-        super("AGV", "AGV-1", AssetType.AGV, mediator);
+    public Agv() {
+        super("AGV", "AGV-1", AssetType.AGV);
         this.batteryLevel = 100;
     }
 
@@ -37,7 +39,14 @@ public class Agv extends Asset implements Observer {
 
     @Override
     public boolean processTask(Task task) {
-        return agvService.handleTask(task);
+        mediator.notify(this, "TaskAccepted", task);
+        if (agvService.handleTask(task)) {
+            mediator.notify(this, "TaskCompleted", task);
+            return true;
+        } else {
+            mediator.notify(this, "TaskFailed", task);
+            return false;
+        }
     }
 
     @Override
