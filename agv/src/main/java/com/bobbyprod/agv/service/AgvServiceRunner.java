@@ -14,8 +14,8 @@ public class AgvServiceRunner {
 
     public static void run() {
         // Create an instance of AgvService
-        Mediator mediator = new Mediator();
-        Agv agv = new Agv(mediator);
+        //Mediator mediator = new Mediator();
+        Agv agv = new Agv();
         AgvController agvController = new AgvController(new RestTemplate());
         AgvService agvService = new AgvService(agvController);
 
