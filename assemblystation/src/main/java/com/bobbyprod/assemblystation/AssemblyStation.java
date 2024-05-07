@@ -16,7 +16,8 @@ public class AssemblyStation extends Asset {
     public AssemblyStation(String id, String name) {
         super(id, name, AssetType.ASSEMBLY_STATION);
         this.state = AssetState.IDLE;
-        this.mqttClient = new ASClient();
+        this.mqttClient = new ASClient(this);
+        this.mediator = new Mediator();
         try {
             mqttClient.connect();  // Attempt to connect to the MQTT broker
             mqttClient.subscribe("emulator/status");// Subscribe to the status topic
@@ -30,7 +31,7 @@ public class AssemblyStation extends Asset {
         System.out.println("AssemblyStation " + getName() + " is processing the task: " + task.getActionType());
         if (processTask(task)) {
             System.out.println("Task successfully completed by " + getName());
-            this.setState(AssetState.IDLE);  // Update state to IDLE on success
+            this.setState(AssetState.BUSY);  // Update state to IDLE on success
         } else {
             System.out.println("Task failed by " + getName());
             this.setState(AssetState.ERROR); // Update state to ERROR on failure

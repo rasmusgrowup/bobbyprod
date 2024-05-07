@@ -2,7 +2,7 @@ package com.bobbyprod.common.Products;
 
 import com.bobbyprod.common.Assets.Asset;
 
-public abstract class Part {
+public class Part {
     private String name;
     private String id;
     private int trayId;
