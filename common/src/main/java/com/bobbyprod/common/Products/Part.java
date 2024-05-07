@@ -5,21 +5,11 @@ import com.bobbyprod.common.Assets.Asset;
 public class Part {
     private String name;
     private String id;
-    private int trayId;
     private Asset location;
 
-    public Part(String name, String id, int trayId) {
+    public Part(String name, String id) {
         this.name = name;
         this.id = id;
-        this.trayId = trayId;
-    }
-
-    public int getTrayId() {
-        return trayId;
-    }
-
-    public void setTrayId(int trayId) {
-        this.trayId = trayId;
     }
 
     public String getName() {
