@@ -25,6 +25,5 @@ public class Main {
 
         // Assign tasks via mediator
         System.out.println("\nAssigning ASSEMBLE_ITEM task to Assembly Station:");
-        mediator.notify(assemblyStation, assembleItem);
     }
 }
