@@ -11,8 +11,8 @@ public class AssemblyStation extends Asset {
     private AssetState state;
 
     private ASClient mqttClient;
-    public AssemblyStation(String id, String name, IMediator mediator) {
-        super(id, name, AssetType.ASSEMBLY_STATION, mediator);
+    public AssemblyStation(String id, String name) {
+        super(id, name, AssetType.ASSEMBLY_STATION);
         this.state = AssetState.IDLE;
         this.mqttClient = new ASClient();
         try {
