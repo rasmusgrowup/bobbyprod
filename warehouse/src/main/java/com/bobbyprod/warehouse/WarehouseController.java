@@ -4,7 +4,9 @@ import com.bobbyprod.common.Interfaces.Observable;
 import com.bobbyprod.common.Interfaces.Observer;
 import com.bobbyprod.common.States.AssetState;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Controller;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -20,12 +22,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+@Controller
 public class WarehouseController implements Observable {
     private String wsURL = "http://localhost:8081/Service.asmx";
     private List<Observer> observers;
     private AssetState state;
     private final ScheduledExecutorService executorService;
 
+    @Autowired
     public WarehouseController(){
         this.observers = new ArrayList<>();
         executorService = Executors.newSingleThreadScheduledExecutor();
@@ -98,9 +102,7 @@ public class WarehouseController implements Observable {
                         "</PickItem>" + "</Body>" + "</Envelope>";
 
         String message = sendSoapRequest(xmlInput);
-        if(message.equals("<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">  <s:Body>    <PickItemResponse xmlns=\"http://tempuri.org/\">      <PickItemResult>Received pick operation.</PickItemResult>    </PickItemResponse>  </s:Body></s:Envelope>")){
-            return true;
-        } else return false;
+        return message.equals("<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">  <s:Body>    <PickItemResponse xmlns=\"http://tempuri.org/\">      <PickItemResult>Received pick operation.</PickItemResult>    </PickItemResponse>  </s:Body></s:Envelope>");
     }
 
     public boolean insertItem(String name, int trayId){
@@ -110,11 +112,7 @@ public class WarehouseController implements Observable {
                         "<name>" + name + "</name>" + "</InsertItem>" + "</Body>" + "</Envelope>";
 
         String message = sendSoapRequest(xmlInput);
-        if(message.equals("<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">  <s:Body>    <InsertItemResponse xmlns=\"http://tempuri.org/\">      <InsertItemResult>Received insert operation.</InsertItemResult>    </InsertItemResponse>  </s:Body></s:Envelope>")){
-            return true;
-        } else {
-            return false;
-        }
+        return message.equals("<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">  <s:Body>    <InsertItemResponse xmlns=\"http://tempuri.org/\">      <InsertItemResult>Received insert operation.</InsertItemResult>    </InsertItemResponse>  </s:Body></s:Envelope>");
     }
 
     public String extractJsonFromXml(String xml) throws Exception {
@@ -171,6 +169,7 @@ public class WarehouseController implements Observable {
         int stateValue = jsonResponse.getInt("State");
 
         this.state = stateValue == 0 ? AssetState.IDLE : stateValue == 1 ? AssetState.BUSY : AssetState.ERROR;
+        System.out.println("POLL POLL POLL");
         notifyObservers();
     }
 

@@ -21,7 +21,7 @@ public class WarehouseMain
 
         // Create a new task
         Task task = new Task();
-        task.setPart(new Part("African Child Fighter","69",8));
+        task.setPart(new Part("Test Item","250",8));
         task.getPart().setTrayId(-1);
         task.setActionType(ActionType.INSERT_ITEM);
 

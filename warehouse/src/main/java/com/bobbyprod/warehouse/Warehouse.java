@@ -7,15 +7,20 @@ import com.bobbyprod.common.Interfaces.Observer;
 import com.bobbyprod.common.States.AssetState;
 import com.bobbyprod.common.Tasks.Task;
 import com.bobbyprod.common.Tasks.TaskStatus;
+import org.springframework.stereotype.Component;
 
+@Component
 public class Warehouse extends Asset implements Observer {
     private AssetState state;
     private WarehouseService wService = new WarehouseService();
+    private WarehouseController wController;
     protected Mediator mediator = new Mediator();
 
     public Warehouse(String id, String name){
         super(id, name, AssetType.WAREHOUSE);
         this.wService = new WarehouseService();
+        wController = new WarehouseController();
+        wController.addObserver(this);
     }
 
     @Override
