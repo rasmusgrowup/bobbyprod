@@ -26,7 +26,7 @@ class AcceptCompatibleTask {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        assemblyStation = new AssemblyStation("AS1", "Main Assembly Station", mediator);
+        assemblyStation = new AssemblyStation("AS1", "Main Assembly Station");
     }
 
     @Test
@@ -49,6 +49,6 @@ class AcceptCompatibleTask {
         assemblyStation.acceptTask(task);
 
         assertEquals(AssetState.ERROR, assemblyStation.getState(), "Assembly station should be in ERROR state after processing an incompatible task.");
-        verify(mediator, never()).notify(assemblyStation, "TaskAssigned", task);  // Verify that mediator does not get called
+        verify(mediator, never()).notify(assemblyStation, task);  // Verify that mediator does not get called
     }
 }

@@ -13,7 +13,7 @@ public class Main {
         Mediator mediator = new Mediator();
 
         // Create asset
-        Asset assemblyStation = new AssemblyStation("AS1", "Main Assembly Station", mediator);
+        Asset assemblyStation = new AssemblyStation("AS1", "Main Assembly Station");
 
         // Register asset with the mediator
         mediator.registerAsset(assemblyStation);
@@ -25,6 +25,6 @@ public class Main {
 
         // Assign tasks via mediator
         System.out.println("\nAssigning ASSEMBLE_ITEM task to Assembly Station:");
-        mediator.notify(assemblyStation, "TaskAssigned", assembleItem);
+        mediator.notify(assemblyStation, assembleItem);
     }
 }
