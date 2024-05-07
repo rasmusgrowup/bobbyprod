@@ -13,13 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication(scanBasePackages = "com.bobbyprod")
 @EnableScheduling
 public class AppApplication {
-
-	@PostMapping("/start")
-	public ResponseEntity<String> handleAction() {
-		System.out.println("Action handled successfully");
-		return ResponseEntity.ok("Action handled successfully");
-	}
-
 	public static void main(String[] args) {
 		SpringApplication.run(AppApplication.class, args);
 	}
