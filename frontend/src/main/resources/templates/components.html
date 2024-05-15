@@ -3,11 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Components Page</title>
+    <title>Components page</title>
+    <!-- CSS -->
+    <link th:href="@{/css/comps.css}" rel="stylesheet"></link>
+    <!-- JS -->
+    <script th:src="@{/js/main.js}" type="text/javascript" defer></script>
 </head>
 <body>
-<h1>Welcome to Components Page!</h1>
-<a href="/">Go to data page</a>
-<!-- Add your components and content here -->
+<header>
+    <h1>Bobby Production App - Components Overview</h1>
+    <nav>
+        <button class="active">COMPS</button>
+        <button>
+            <a href="/">DATA</a>
+        </button>
+        <button th:id="actionButton">Start production</button>
+    </nav>
+</header>
+<main>
+    <section class="column">
+        <h2>Warehouse</h2>
+        <div class="card">
+            <p>ID: 1</p>
+            <p>Inventory</p>
+            <button>+</button>
+        </div>
+        <div class="card">
+            <p>ID: 2</p>
+            <p>Inventory</p>
+            <button>+</button>
+        </div>
+        <div class="card">
+            <p>ID: 3</p>
+            <p>Inventory</p>
+            <button>+</button>
+        </div>
+        <button class="add-button">+</button>
+    </section>
+    <section class="column">
+        <h2>AGV</h2>
+        <div class="card">
+            <p>ID: 1</p>
+            <p>Battery: 40%</p>
+            <p>Status: Idle</p>
+            <button>+</button>
+        </div>
+        <div class="card">
+            <p>ID: 2</p>
+            <p>Battery: 45%</p>
+            <p>Status: Executing</p>
+            <button>+</button>
+        </div>
+        <div class="card">
+            <p>ID: 3</p>
+            <p>Battery: 30%</p>
+            <p>Status: Executing</p>
+            <button>+</button>
+        </div>
+        <div class="card">
+            <p>ID: 4</p>
+            <p>Battery: 40%</p>
+            <p>Status: Charging</p>
+            <button>+</button>
+        </div>
+        <div class="card">
+            <p>ID: 5</p>
+            <p>Battery: 60%</p>
+            <p>Status: Idle</p>
+            <button>+</button>
+        </div>
+        <button class="add-button">+</button>
+    </section>
+    <section class="column">
+        <h2>Assembly Station</h2>
+        <div class="card">
+            <p>ID: 1</p>
+            <p>Status: Idle</p>
+            <button>+</button>
+        </div>
+        <div class="card">
+            <p>ID: 2</p>
+            <p>Status: Executing</p>
+            <button>+</button>
+        </div>
+        <div class="card">
+            <p>ID: 3</p>
+            <p>Status: Error</p>
+            <button>+</button>
+        </div>
+        <button class="add-button">+</button>
+    </section>
+</main>
 </body>
 </html>
