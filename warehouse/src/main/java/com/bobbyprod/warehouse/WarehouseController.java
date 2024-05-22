@@ -109,22 +109,25 @@ public class WarehouseController {
         return message.equals("<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">  <s:Body>    <InsertItemResponse xmlns=\"http://tempuri.org/\">      <InsertItemResult>Received insert operation.</InsertItemResult>    </InsertItemResponse>  </s:Body></s:Envelope>");
     }
 
-    public String extractJsonFromXml(String xml) throws Exception {
-        if (xml != null && !xml.trim().startsWith("<")) {
-            throw new IllegalArgumentException("Invalid XML content: Does not start with '<'");
+    public String extractJsonFromXml(String xml) throws IllegalArgumentException {
+        xml = removeBOM(xml);
+
+        int firstXmlTagIndex = xml.indexOf("<");
+        if (firstXmlTagIndex == -1) {
+            throw new IllegalArgumentException("Invalid XML content: No XML tag found");
+        }
+        xml = xml.substring(firstXmlTagIndex);
+
+        int jsonStartIndex = xml.indexOf("{");
+        int jsonEndIndex = xml.lastIndexOf("}") + 1;
+
+        if (jsonStartIndex == -1 || jsonEndIndex == -1) {
+            throw new IllegalArgumentException("Invalid XML content: JSON part not found");
         }
 
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        InputSource source = new InputSource(new StringReader(xml.trim()));
-        Document doc = builder.parse(source);
-
-        NodeList nl = doc.getElementsByTagName("GetInventoryResult");
-        if (nl.getLength() > 0) {
-            return nl.item(0).getTextContent();
-        }
-        return null; // Return null if no JSON found
+        return xml.substring(jsonStartIndex, jsonEndIndex);
     }
+
     private String removeBOM(String data) {
         if (data != null && data.startsWith("\uFEFF")) {
             return data.substring(1);
