@@ -1,6 +1,7 @@
 package com.bobbyprod.warehouse;
 
 import com.bobbyprod.common.States.AssetState;
+import com.bobbyprod.common.Tasks.Task;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -19,21 +20,28 @@ public class WarehouseService {
         }
     }
 
-    public void fillInventory() {
+    public boolean fillInventory(String name) {
         while(findEmptyShelfId() != -1) {
-            client.insertItem("Drone Parts", findEmptyShelfId());
+            if(!client.insertItem(name, findEmptyShelfId())){
+                return false;
+            }
         }
+        return true;
     }
 
-    public void pickItem(){
-        client.pickItem(findDronePartId());
+    public boolean pickItem(String name){
+        return client.pickItem(findDronePartId(name));
     }
 
-    public void insertItem(){
-        client.insertItem("Drone",findEmptyShelfId());
+    public boolean pickItem(int trayId){
+        return client.pickItem(trayId);
     }
 
-    public int findDronePartId(){
+    public boolean insertItem(String name,int id){
+        return client.insertItem(name,id);
+    }
+
+    public int findDronePartId(String name){
         String inv = client.getInventory();
         JSONObject jsonResponse = new JSONObject(inv);
         JSONArray inventoryItems = jsonResponse.getJSONArray("Inventory");
@@ -41,13 +49,26 @@ public class WarehouseService {
         for (int i = 0; i < inventoryItems.length(); i++) {
             JSONObject item = inventoryItems.getJSONObject(i);
             String content = item.optString("Content", null);
-            if ("Drone Parts".equals(content)) {
+            if (name.equals(content)) {
                 return item.getInt("Id");
             }
         }
         return -1;
     }
 
+    public String[] setInventoryArray() {
+        String inv = client.getInventory();
+        JSONObject jsonObject = new JSONObject(inv);
+        JSONArray inventoryArray = jsonObject.getJSONArray("Inventory");
+        String[] contentArray = new String[10];
+
+        for (int i = 0; i < inventoryArray.length(); i++) {
+            JSONObject inventoryItem = inventoryArray.getJSONObject(i);
+            String content = inventoryItem.getString("Content");
+            contentArray[i] = content;
+        }
+        return contentArray;
+    }
 
     public int findEmptyShelfId() {
         // Assuming 'in' is the JSON string embedded in the XML.
@@ -87,5 +108,26 @@ public class WarehouseService {
                 return AssetState.ERROR;
         }
         return AssetState.ERROR;
+    }
+
+    public boolean handleTask(Task task){
+        boolean result = false;
+        switch (task.getActionType()){
+            case INSERT_ITEM:
+                    int emptyShelf = findEmptyShelfId();
+                    task.getProduct().setTrayId(emptyShelf);
+                    result = insertItem(task.getProduct().getName(),emptyShelf);
+                break;
+            case PICK_ITEM:
+                    result = pickItem(task.getProduct().getTrayId());
+                break;
+            case FILL_PARTS:
+                clearInventory();
+                result = fillInventory(task.getPart().getName());
+                break;
+            default:
+                System.out.println("Unknown action type" + task.getActionType());
+        }
+        return result;
     }
 }

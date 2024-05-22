@@ -4,39 +4,61 @@ import com.bobbyprod.common.Assets.Asset;
 import com.bobbyprod.common.Assets.AssetType;
 import com.bobbyprod.common.Communication.Mediator;
 import com.bobbyprod.common.Interfaces.IMediator;
-import com.bobbyprod.common.Products.ProductStatus;
 import com.bobbyprod.common.States.AssetState;
 import com.bobbyprod.common.Tasks.Task;
 import com.bobbyprod.common.Tasks.TaskStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Warehouse extends Asset {
+public class Warehouse extends Asset{
     private AssetState state;
     private WarehouseService wService;
+    private WarehouseController wController;
+    private String[] invArray;
     private IMediator mediator;
 
-    public Warehouse() {
-        super("Warehouse1", "Main warehouse", AssetType.WAREHOUSE);
-        //wService.clearInventory();
-        //wService.fillInventory();
-        //this.state = wService.checkState();
-        this.state = AssetState.IDLE;
-        this.wService = new WarehouseService();
+    public Warehouse(){
+        super("id - 1", "warehouse 1", AssetType.WAREHOUSE);
+        wController = new WarehouseController();
+        wService = new WarehouseService();
+        invArray = wService.setInventoryArray();
+        wController.pollWarehouseStatus();
         this.mediator = Mediator.getInstance();
     }
 
     @Override
     public boolean processTask(Task task) {
         task.setStatus(TaskStatus.TASK_ACCEPTED);
-        mediator.notify(this, task);
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        mediator.notify(this,task);
+        if(wService.handleTask(task)){
+            task.setStatus(TaskStatus.TASK_COMPLETED);
+            mediator.notify(this,task);
+            invArray = wService.setInventoryArray();
+            return true;
+        } else {
+            task.setStatus(TaskStatus.TASK_FAILED);
+            mediator.notify(this,task);
+            return false;
         }
-        task.setStatus(TaskStatus.TASK_COMPLETED);
-        mediator.notify(this, task);
-        return true;
+    }
+
+    public String[] getInvArray(){
+        return invArray;
+    }
+
+    @Override
+    public AssetState getState() {
+        return state;
+    }
+
+    @Override
+    public void setState(AssetState state) {
+        this.state = state;
+    }
+
+    @Scheduled(fixedRate = 1000)
+    public void updateState() {
+        setState(wController.pollWarehouseStatus());
     }
 }

@@ -1,17 +1,26 @@
 package com.bobbyprod.warehouse;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import com.bobbyprod.common.States.AssetState;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
+@Controller
 public class WarehouseController {
-    String wsURL = "http://localhost:8081/Service.asmx";
+    private String wsURL = "http://localhost:8081/Service.asmx";
+    private AssetState state;
+
+    @Autowired
+    public WarehouseController(){
+    }
+
+    public AssetState getState(){
+        return state;
+    }
 
     public String sendSoapRequest(String xmlInput){
         URL url = null;
@@ -73,44 +82,65 @@ public class WarehouseController {
         }
     }
 
-    public void pickItem(int trayId){
+    public boolean pickItem(int trayId){
         String xmlInput =
                 "<Envelope xmlns=\"http://schemas.xmlsoap.org/soap/envelope/\">" + "<Body>" +
                         "<PickItem xmlns=\"http://tempuri.org/\">" + "<trayId>" + trayId + "</trayId>" +
                         "</PickItem>" + "</Body>" + "</Envelope>";
 
-        sendSoapRequest(xmlInput);
+        String message = sendSoapRequest(xmlInput);
+        return message.equals("<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">  <s:Body>    <PickItemResponse xmlns=\"http://tempuri.org/\">      <PickItemResult>Received pick operation.</PickItemResult>    </PickItemResponse>  </s:Body></s:Envelope>");
     }
 
-    public void insertItem(String name, int trayId){
+    public boolean insertItem(String name, int trayId){
         String xmlInput =
                 "<Envelope xmlns=\"http://schemas.xmlsoap.org/soap/envelope/\">" + "<Body>" +
                         "<InsertItem xmlns=\"http://tempuri.org/\">" + "<trayId>" + trayId + "</trayId>" +
                         "<name>" + name + "</name>" + "</InsertItem>" + "</Body>" + "</Envelope>";
 
-        sendSoapRequest(xmlInput);
+        String message = sendSoapRequest(xmlInput);
+        return message.equals("<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">  <s:Body>    <InsertItemResponse xmlns=\"http://tempuri.org/\">      <InsertItemResult>Received insert operation.</InsertItemResult>    </InsertItemResponse>  </s:Body></s:Envelope>");
     }
 
-    public String extractJsonFromXml(String xml) throws Exception {
-        if (xml != null && !xml.trim().startsWith("<")) {
-            throw new IllegalArgumentException("Invalid XML content: Does not start with '<'");
+    public String extractJsonFromXml(String xml) throws IllegalArgumentException {
+        xml = removeBOM(xml);
+
+        int firstXmlTagIndex = xml.indexOf("<");
+        if (firstXmlTagIndex == -1) {
+            throw new IllegalArgumentException("Invalid XML content: No XML tag found");
+        }
+        xml = xml.substring(firstXmlTagIndex);
+
+        int jsonStartIndex = xml.indexOf("{");
+        int jsonEndIndex = xml.lastIndexOf("}") + 1;
+
+        if (jsonStartIndex == -1 || jsonEndIndex == -1) {
+            throw new IllegalArgumentException("Invalid XML content: JSON part not found");
         }
 
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        InputSource source = new InputSource(new StringReader(xml.trim()));
-        Document doc = builder.parse(source);
-
-        NodeList nl = doc.getElementsByTagName("GetInventoryResult");
-        if (nl.getLength() > 0) {
-            return nl.item(0).getTextContent();
-        }
-        return null; // Return null if no JSON found
+        return xml.substring(jsonStartIndex, jsonEndIndex);
     }
+
     private String removeBOM(String data) {
         if (data != null && data.startsWith("\uFEFF")) {
             return data.substring(1);
         }
         return data;
+    }
+
+    public AssetState pollWarehouseStatus(){
+        String jsonPart = getInventory();
+        AssetState state;
+
+        if (jsonPart == null) {
+            System.out.println("JSON part not found in the XML.");
+            state = AssetState.ERROR;
+        } else {
+            JSONObject jsonResponse = new JSONObject(jsonPart);
+            int stateValue = jsonResponse.getInt("State");
+
+            state = stateValue == 0 ? AssetState.IDLE : stateValue == 1 ? AssetState.BUSY : AssetState.ERROR;
+        }
+        return state;
     }
 }
