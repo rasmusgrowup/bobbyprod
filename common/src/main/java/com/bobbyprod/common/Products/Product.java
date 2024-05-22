@@ -1,6 +1,7 @@
 package com.bobbyprod.common.Products;
 
 import com.bobbyprod.common.Assets.Asset;
+import com.bobbyprod.common.Tasks.Task;
 
 import java.util.ArrayList;
 
@@ -10,14 +11,17 @@ public class Product {
     private String id;
     private Asset location;
     private boolean isAssembled;
-    private ArrayList<Part> partsList = new ArrayList<Part>();
-    public Product(String name, String id, Asset location, ArrayList<Part> partsList) {
+    private ProductStatus status;
+    private ArrayList<Part> partsList;
+    private ArrayList<Task> tasks;
+
+    public Product(String name, String id, Asset location) {
         this.name = name;
         this.id = id;
         this.location = location;
-        this.partsList = partsList;
+        this.isAssembled = false;
+        this.status = null;
     }
-
 
     public int getTrayId() {
         return trayId;
@@ -61,5 +65,25 @@ public class Product {
 
     public void setAssembled(boolean assembled) {
         isAssembled = assembled;
+    }
+
+    private void setPartsList(ArrayList<Part> partsList) {
+        this.partsList = partsList;
+    }
+
+    public ArrayList<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(ArrayList<Task> tasks) {
+        this.tasks = tasks;
+    }
+
+    public void setStatus(ProductStatus status) {
+        this.status = status;
+    }
+
+    public ProductStatus getStatus() {
+        return status;
     }
 }

@@ -1,5 +1,6 @@
 package com.bobbyprod.common.Tasks;
 
+import com.bobbyprod.common.Assets.Asset;
 import com.bobbyprod.common.Assets.AssetType;
 import com.bobbyprod.common.Products.Part;
 import com.bobbyprod.common.Products.Product;
@@ -15,11 +16,17 @@ public class Task {
     private AssetType compatibleAssetType;
     private Product product;
     private Part part;
+    private Asset processedBy, destination;
 
     /**
      * Default constructor for creating an empty task.
      */
     public Task() {
+    }
+
+    public Task(ActionType actionType, Asset processedBy) {
+        this.actionType = actionType;
+        this.processedBy = processedBy;
     }
 
     /**
@@ -44,12 +51,12 @@ public class Task {
      *
      * @param actionType the type of action this task involves
      * @param compatibleAssetType the type of asset that can handle this task
-     * @param part the part involved in this task
+     //* @param part the part involved in this task
      */
-    public Task(ActionType actionType, AssetType compatibleAssetType, Part part) {
+    public Task(ActionType actionType, AssetType compatibleAssetType) {
         this.actionType = actionType;
         this.compatibleAssetType = compatibleAssetType;
-        this.part = part;
+        //this.part = part;
         this.product = null; // Ensure product is null when part is used
     }
 
@@ -94,5 +101,21 @@ public class Task {
 
     public void setStatus(TaskStatus status) {
         this.status = status;
+    }
+
+    public Asset getProcessedBy() {
+        return processedBy;
+    }
+
+    public void setProcessedBy(Asset processedBy) {
+        this.processedBy = processedBy;
+    }
+
+    public Asset getDestination() {
+        return destination;
+    }
+
+    public void setDestination(Asset destination) {
+        this.destination = destination;
     }
 }
