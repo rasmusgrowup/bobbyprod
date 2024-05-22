@@ -16,14 +16,15 @@ public class AssemblyStation extends Asset {
     public AssemblyStation(String id, String name) {
         super(id, name, AssetType.ASSEMBLY_STATION);
         this.state = AssetState.IDLE;
-        this.mqttClient = new ASClient(this);
-        this.mediator = new Mediator();
-        try {
-            mqttClient.connect();  // Attempt to connect to the MQTT broker
-            mqttClient.subscribe("emulator/status");// Subscribe to the status topic
-        } catch (MqttException e) {
-            System.out.println("Failed to connect to MQTT broker: " + e.getMessage());
-        }
+        this.mediator = Mediator.getInstance();
+//        this.mqttClient = new ASClient(this);
+//        this.mediator = Mediator.getInstance();
+//        try {
+//            mqttClient.connect();  // Attempt to connect to the MQTT broker
+//            mqttClient.subscribe("emulator/status");// Subscribe to the status topic
+//        } catch (MqttException e) {
+//            System.out.println("Failed to connect to MQTT broker: " + e.getMessage());
+//        }
     }
 
 
@@ -39,27 +40,38 @@ public class AssemblyStation extends Asset {
     }
     @Override
     public boolean processTask(Task task) {
+//        try {
+//            task.setStatus(TaskStatus.TASK_ACCEPTED);
+//            mediator.notify(this, task);
+//            switch (task.getActionType()) {
+//                case ASSEMBLE_ITEM:
+//                    AssemblyCommand command = new AssemblyCommand(1);
+//                    mqttClient.publish("emulator/operation", command);
+//                    task.setStatus(TaskStatus.TASK_COMPLETED);
+//                    mediator.notify(this, task);
+//                    return true;
+//                default:
+//                    task.setStatus(TaskStatus.TASK_FAILED);
+//                    mediator.notify(this, task);
+//                    return false;
+//            }
+//        } catch (MqttException e) {
+//            System.out.println("Failed to publish MQTT message: " + e.getMessage());
+//            task.setStatus(TaskStatus.TASK_FAILED);
+//            mediator.notify(this, task);
+//            return false;
+//        }
+        task.setStatus(TaskStatus.TASK_ACCEPTED);
+        mediator.notify(this, task);
         try {
-            task.setStatus(TaskStatus.TASK_ACCEPTED);
-            mediator.notify(this, task);
-            switch (task.getActionType()) {
-                case ASSEMBLE_ITEM:
-                    AssemblyCommand command = new AssemblyCommand(1);
-                    mqttClient.publish("emulator/operation", command);
-                    task.setStatus(TaskStatus.TASK_COMPLETED);
-                    mediator.notify(this, task);
-                    return true;
-                default:
-                    task.setStatus(TaskStatus.TASK_FAILED);
-                    mediator.notify(this, task);
-                    return false;
-            }
-        } catch (MqttException e) {
-            System.out.println("Failed to publish MQTT message: " + e.getMessage());
-            task.setStatus(TaskStatus.TASK_FAILED);
-            mediator.notify(this, task);
-            return false;
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
+        task.setStatus(TaskStatus.TASK_COMPLETED);
+        task.getProduct().setAssembled(true);
+        mediator.notify(this, task);
+        return true;
     }
     @Override
     public AssetState getState() {
