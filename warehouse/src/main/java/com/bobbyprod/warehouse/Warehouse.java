@@ -4,16 +4,10 @@ import com.bobbyprod.common.Assets.Asset;
 import com.bobbyprod.common.Assets.AssetType;
 import com.bobbyprod.common.Communication.Mediator;
 import com.bobbyprod.common.Interfaces.IMediator;
-import com.bobbyprod.common.Interfaces.Observer;
-import com.bobbyprod.common.Communication.Mediator;
-import com.bobbyprod.common.Interfaces.IMediator;
-import com.bobbyprod.common.Products.ProductStatus;
 import com.bobbyprod.common.States.AssetState;
 import com.bobbyprod.common.Tasks.Task;
 import com.bobbyprod.common.Tasks.TaskStatus;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-import com.bobbyprod.common.Tasks.TaskStatus;
 import org.springframework.stereotype.Component;
 
 @Component

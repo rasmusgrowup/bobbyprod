@@ -114,24 +114,12 @@ public class WarehouseService {
         boolean result = false;
         switch (task.getActionType()){
             case INSERT_ITEM:
-                if(task.getPart() == null){
                     int emptyShelf = findEmptyShelfId();
                     task.getProduct().setTrayId(emptyShelf);
                     result = insertItem(task.getProduct().getName(),emptyShelf);
-                }
-                else if(task.getProduct() == null){
-                    int emptyShelf = findEmptyShelfId();
-                    task.getPart().setTrayId(emptyShelf);
-                    result = insertItem(task.getPart().getName(),emptyShelf);
-                }
                 break;
             case PICK_ITEM:
-                if(task.getProduct() == null){
-                    result = pickItem(task.getPart().getTrayId());
-                }
-                else if(task.getPart() == null){
                     result = pickItem(task.getProduct().getTrayId());
-                }
                 break;
             case FILL_PARTS:
                 clearInventory();
