@@ -1,0 +1,41 @@
+@startuml
+title Assembly Station Sequence Diagram
+actor User
+participant AssemblyStation
+participant ASClient
+participant Mediator
+participant MQTTBroker
+
+User -> AssemblyStation: create AssemblyStation
+activate AssemblyStation
+AssemblyStation -> ASClient: new ASClient(this)
+activate ASClient
+ASClient -> MQTTBroker: connect()
+activate MQTTBroker
+MQTTBroker -> ASClient: connection acknowledgment
+deactivate MQTTBroker
+ASClient -> MQTTBroker: subscribe("emulator/status")
+deactivate ASClient
+
+AssemblyStation -> AssemblyStation: acceptTask(Task)
+activate AssemblyStation
+AssemblyStation -> ASClient: publish("emulator/operation", command)
+activate ASClient
+ASClient -> MQTTBroker: publish("emulator/operation", command)
+activate MQTTBroker
+MQTTBroker -> ASClient: publish acknowledgment
+deactivate MQTTBroker
+deactivate ASClient
+
+AssemblyStation -> Mediator: notify(this, task)
+activate Mediator
+Mediator -> AssemblyStation: update task status
+deactivate Mediator
+
+MQTTBroker -> ASClient: messageArrived("emulator/status", message)
+activate ASClient
+ASClient -> AssemblyStation: setState(AssetState)
+AssemblyStation -> AssemblyStation: update state
+deactivate ASClient
+deactivate AssemblyStation
+@enduml

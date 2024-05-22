@@ -1,0 +1,91 @@
+@startuml
+title BobbyProduction Component Diagram
+skinparam defaultTextAlignment center
+
+top to bottom direction
+component [<<Component>>\ncore] as core #Lightgreen {
+    class ServletInitializer
+    class AppApplication
+}
+
+component [<<Component>>\nwarehouse] as warehouse #Lightgreen {
+    class Warehouse
+    class WarehouseController
+    class WarehouseService
+}
+
+component [<<Component>>\nagv] as agv #Lightgreen {
+    package controller {
+        class AGVController
+    }
+    package model {
+        class AgvChangeState
+        class AgvLoadProgram
+        class AgvResponse
+    }
+    package service {
+        class AGVService
+    }
+    package util {
+        class Agv
+    }
+}
+
+component [<<Component>>\nassemblystation] as assemblystation #Lightgreen {
+    class ASClient
+    class AssemblyCommand
+    class AssemblyStation
+}
+
+component [<<Component>>\ncommon] as common #Khaki {
+    package Assets {
+        class Asset
+        class AssetManager
+        class AssetType
+    }
+    package Communication {
+        class Mediator
+    }
+    package Interfaces {
+        interface IMediator
+        interface Observable
+        interface Observer
+    }
+    package ProductionLine {
+        class ActivePartsList
+        class ActiveProductsList
+        class ProductionQueue
+    }
+    package Products {
+        class DronePart
+        class Part
+        class Product
+        class ProductStatus
+    }
+    package States {
+        class AssetState
+    }
+    package Tasks {
+        class ActionType
+        class Task
+        class TaskStatus
+    }
+}
+
+component [<<Component>>\nfrontend] as frontend #Lightblue {
+    package controller {
+        class PageController
+    }
+}
+
+frontend .> core
+core .> common
+warehouse .> common
+agv .> common
+assemblystation .> common
+
+core -0)- agv : IMediator, Observable, Observer
+core -0)- assemblystation : IMediator
+core -0)- warehouse : IMediator
+
+@enduml

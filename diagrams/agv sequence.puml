@@ -1,0 +1,57 @@
+@startuml
+title AGV Sequence Diagram
+actor User
+participant Agv
+participant AgvController
+participant AgvService
+participant Mediator
+participant RestAPIServer
+
+User -> Agv: create Agv
+activate Agv
+Agv -> AgvService: setAgvService(agvService)
+Agv -> AgvController: setAgvController(agvController)
+activate AgvController
+AgvController -> Agv: addObserver(this)
+AgvController -> AgvController: schedulePolling()
+deactivate AgvController
+
+User -> Agv: acceptTask(Task)
+activate Agv
+Agv -> AgvService: handleTask(Task)
+activate AgvService
+AgvService -> AgvController: loadProgram(programName, state)
+activate AgvController
+AgvController -> RestAPIServer: HTTP PUT /v1/status (programName, state)
+activate RestAPIServer
+RestAPIServer -> AgvController: response
+deactivate RestAPIServer
+AgvController -> AgvService: program loaded
+deactivate AgvController
+AgvService -> AgvController: changeState(state)
+activate AgvController
+AgvController -> RestAPIServer: HTTP PUT /v1/status (state)
+activate RestAPIServer
+RestAPIServer -> AgvController: response
+deactivate RestAPIServer
+AgvController -> AgvService: state changed
+deactivate AgvController
+AgvService -> Agv: handleTask result
+deactivate AgvService
+Agv -> Mediator: notify(this, task)
+activate Mediator
+Mediator -> Agv: update task status
+deactivate Mediator
+
+AgvController -> RestAPIServer: pollAgvStatus()
+activate RestAPIServer
+RestAPIServer -> AgvController: response (battery, state)
+deactivate RestAPIServer
+AgvController -> Agv: notifyObservers()
+activate Agv
+Agv -> Agv: update state and battery level
+deactivate Agv
+
+deactivate Agv
+
+@enduml

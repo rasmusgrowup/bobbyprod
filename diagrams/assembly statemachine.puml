@@ -1,0 +1,15 @@
+@startuml
+title Assembly Station State Machine Diagram
+[*] --> Idle : Initial state
+
+Idle : Waiting for tasks
+Idle --> Busy : acceptTask
+
+Busy : Processing task
+Busy --> Idle : completeTask
+Busy --> Error : taskFailed
+
+Error : Handling error
+Error --> Idle : reset
+
+@enduml

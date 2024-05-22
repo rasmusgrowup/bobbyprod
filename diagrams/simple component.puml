@@ -1,0 +1,41 @@
+@startuml
+title BobbyProduction Component Diagram
+skinparam defaultTextAlignment center
+
+left to right direction
+
+skinparam component {
+    FontName Arial
+    FontSize 16
+    FontStyle Bold
+    BorderThickness 1
+}
+
+skinparam arrow {
+    FontSize 14
+    FontStyle Bold
+}
+
+component [<<Component>>\ncore] as core #Lightgreen
+
+together {
+    component [<<Component>>\nwarehouse] as warehouse #Lightgreen
+    component [<<Component>>\nagv] as agv #Lightgreen
+    component [<<Component>>\nassemblystation] as assemblystation #Lightgreen
+}
+
+component [<<Component>>\ncommon] as common #Khaki
+
+component [<<Component>>\nfrontend] as frontend #Lightblue
+
+frontend .> core
+frontend .> warehouse
+core .> common
+warehouse .> common
+agv .> common
+assemblystation .> common
+
+core --(0- warehouse : IMediator
+core --(0- agv : IMediator, Observable, Observer
+core --(0- assemblystation : IMediator
+@enduml

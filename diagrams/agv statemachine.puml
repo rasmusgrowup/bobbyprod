@@ -1,0 +1,21 @@
+@startuml
+title AGV State Machine Diagram
+
+Idle : Waiting for task
+Error : Handling error
+Busy : Processing task
+Charging : Charging battery
+
+[*] --> Idle : Initial state
+
+Idle --> Busy : startTask
+Busy --> Idle : completeTask
+Busy --> Charging : lowBattery
+Charging --> Idle : fullyCharged
+Error --> Idle : reset
+Idle --> Charging : lowBattery
+
+[*] --> Error : taskFailed
+[*] --> Error : errorDetected
+
+@enduml
