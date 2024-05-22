@@ -17,7 +17,7 @@ public class WarehouseMain
     {
         // Create an instance of AgvService
         //Mediator mediator = new Mediator();
-        Warehouse warehouse = new Warehouse("Warehouse - 1","Warehouse");
+        Warehouse warehouse = new Warehouse();
 
         // Create a new task
         Task task = new Task();
