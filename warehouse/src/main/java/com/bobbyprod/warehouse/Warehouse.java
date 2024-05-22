@@ -13,14 +13,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class Warehouse extends Asset implements Observer {
     private AssetState state;
-    private WarehouseService wService = new WarehouseService();
+    private WarehouseService wService;
     private WarehouseController wController;
+    private String[] invArray;
     protected Mediator mediator = new Mediator();
 
     public Warehouse(){
         super("id - 1", "warehouse 1", AssetType.WAREHOUSE);
-        this.wService = new WarehouseService();
         wController = new WarehouseController();
+        wService = new WarehouseService();
+        invArray = wService.setInventoryArray();
     }
 
     @Override
@@ -30,12 +32,17 @@ public class Warehouse extends Asset implements Observer {
         if(wService.handleTask(task)){
             task.setStatus(TaskStatus.TASK_COMPLETED);
             mediator.notify(this,task);
+            invArray = wService.setInventoryArray();
             return true;
         } else {
             task.setStatus(TaskStatus.TASK_FAILED);
             mediator.notify(this,task);
             return false;
         }
+    }
+
+    public String[] getInvArray(){
+        return invArray;
     }
 
     @Override

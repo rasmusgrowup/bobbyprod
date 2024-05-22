@@ -33,6 +33,10 @@ public class WarehouseService {
         return client.pickItem(findDronePartId(name));
     }
 
+    public boolean pickItem(int trayId){
+        return client.pickItem(trayId);
+    }
+
     public boolean insertItem(String name,int id){
         return client.insertItem(name,id);
     }
@@ -52,6 +56,19 @@ public class WarehouseService {
         return -1;
     }
 
+    public String[] setInventoryArray() {
+        String inv = client.getInventory();
+        JSONObject jsonObject = new JSONObject(inv);
+        JSONArray inventoryArray = jsonObject.getJSONArray("Inventory");
+        String[] contentArray = new String[10];
+
+        for (int i = 0; i < inventoryArray.length(); i++) {
+            JSONObject inventoryItem = inventoryArray.getJSONObject(i);
+            String content = inventoryItem.getString("Content");
+            contentArray[i] = content;
+        }
+        return contentArray;
+    }
 
     public int findEmptyShelfId() {
         // Assuming 'in' is the JSON string embedded in the XML.
@@ -110,10 +127,10 @@ public class WarehouseService {
                 break;
             case PICK_ITEM:
                 if(task.getProduct() == null){
-                    result = pickItem(task.getPart().getName());
+                    result = pickItem(task.getPart().getTrayId());
                 }
                 else if(task.getPart() == null){
-                    result = pickItem(task.getProduct().getName());
+                    result = pickItem(task.getProduct().getTrayId());
                 }
                 break;
             case FILL_PARTS:
