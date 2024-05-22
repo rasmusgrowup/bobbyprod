@@ -43,6 +43,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.bobbyprod.warehouse</groupId>
+            <artifactId>warehouse</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.bobbyprod.frontend</groupId>
             <artifactId>frontend</artifactId>
             <version>0.0.1</version>

@@ -7,6 +7,7 @@ import com.bobbyprod.common.Interfaces.Observer;
 import com.bobbyprod.common.States.AssetState;
 import com.bobbyprod.common.Tasks.Task;
 import com.bobbyprod.common.Tasks.TaskStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,11 +17,10 @@ public class Warehouse extends Asset implements Observer {
     private WarehouseController wController;
     protected Mediator mediator = new Mediator();
 
-    public Warehouse(String id, String name){
-        super(id, name, AssetType.WAREHOUSE);
+    public Warehouse(){
+        super("id - 1", "warehouse 1", AssetType.WAREHOUSE);
         this.wService = new WarehouseService();
         wController = new WarehouseController();
-        wController.addObserver(this);
     }
 
     @Override
@@ -48,8 +48,9 @@ public class Warehouse extends Asset implements Observer {
         this.state = state;
     }
 
+    @Scheduled(fixedRate = 1000)
     @Override
     public void update() {
-        setState(wService.checkState());
+        setState(wController.pollWarehouseStatus());
     }
 }

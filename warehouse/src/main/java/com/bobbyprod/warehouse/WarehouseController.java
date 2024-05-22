@@ -1,11 +1,8 @@
 package com.bobbyprod.warehouse;
 
-import com.bobbyprod.common.Interfaces.Observable;
-import com.bobbyprod.common.Interfaces.Observer;
 import com.bobbyprod.common.States.AssetState;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -16,23 +13,20 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 @Controller
-public class WarehouseController implements Observable {
+public class WarehouseController {
     private String wsURL = "http://localhost:8081/Service.asmx";
-    private List<Observer> observers;
     private AssetState state;
-    private final ScheduledExecutorService executorService;
 
     @Autowired
     public WarehouseController(){
-        this.observers = new ArrayList<>();
-        executorService = Executors.newSingleThreadScheduledExecutor();
+    }
+
+    public AssetState getState(){
+        return state;
     }
 
     public String sendSoapRequest(String xmlInput){
@@ -138,44 +132,19 @@ public class WarehouseController implements Observable {
         return data;
     }
 
-    @Override
-    public void addObserver(Observer observer) {
-        if (!observers.contains(observer)) {
-            observers.add(observer);
-        }
-    }
-
-    @Override
-    public void removeObserver(Observer observer) {
-        observers.remove(observer);
-    }
-
-    @Override
-    public void notifyObservers() {
-        for(Observer observer: observers){
-            observer.update();
-        }
-    }
-
-    public void pollWarehouseStatus(){
+    public AssetState pollWarehouseStatus(){
         String jsonPart = getInventory();
+        AssetState state;
 
         if (jsonPart == null) {
             System.out.println("JSON part not found in the XML.");
-            this.state = AssetState.ERROR;
+            state = AssetState.ERROR;
+        } else {
+            JSONObject jsonResponse = new JSONObject(jsonPart);
+            int stateValue = jsonResponse.getInt("State");
+
+            state = stateValue == 0 ? AssetState.IDLE : stateValue == 1 ? AssetState.BUSY : AssetState.ERROR;
         }
-
-        JSONObject jsonResponse = new JSONObject(jsonPart);
-        int stateValue = jsonResponse.getInt("State");
-
-        this.state = stateValue == 0 ? AssetState.IDLE : stateValue == 1 ? AssetState.BUSY : AssetState.ERROR;
-        System.out.println("POLL POLL POLL");
-        notifyObservers();
+        return state;
     }
-
-    @Scheduled(fixedRate = 1000)
-    public void scheduledPolling(){
-        executorService.scheduleAtFixedRate(this::pollWarehouseStatus,0,1, TimeUnit.SECONDS);
-    }
-
 }
