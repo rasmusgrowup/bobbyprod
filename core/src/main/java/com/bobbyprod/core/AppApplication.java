@@ -25,18 +25,18 @@ public class AppApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(AppApplication.class, args);
 		mediator = Mediator.getInstance();
-		Product product = new Drone("Drone1", "Drone1", null);
-		Asset warehouse = new Warehouse();
-		Asset assemblyStation = new AssemblyStation("AssemblyStation1", "Main Assembly Station");
-		Asset agv = new Agv();
-		mediator.registerAsset(warehouse);
-		mediator.registerAsset(assemblyStation);
-		mediator.registerAsset(agv);
+		//Product product = new Drone("Drone1", "Drone1", null);
+//		Asset warehouse = new Warehouse();
+//		Asset assemblyStation = new AssemblyStation();
+//		Asset agv = new Agv();
+//		mediator.registerAsset(warehouse);
+//		mediator.registerAsset(assemblyStation);
+//		mediator.registerAsset(agv);
 		for (Asset asset : mediator.getAssets()) {
 			System.out.println(asset.getName() + ", type: " + asset.getType());
 		}
-		System.out.println();
-		mediator.getProductionQueue().addToQueue(product);
-		mediator.startProduction();
+//		System.out.println();
+		//mediator.getProductionQueue().addToQueue(product);
+		//mediator.startProduction();
 	}
 }

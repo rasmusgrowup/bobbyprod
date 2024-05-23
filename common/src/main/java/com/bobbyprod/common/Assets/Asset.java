@@ -46,6 +46,6 @@ public abstract class Asset {
     };
 
     public void setState(AssetState state) {
-        this.state = state;
+        this.state = AssetState.valueOf(state.name());
     };
 }
