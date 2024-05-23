@@ -15,18 +15,18 @@ public class WarehouseMain
 {
     public static void main( String[] args )
     {
-        // Create an instance of AgvService
-        //Mediator mediator = new Mediator();
-        Warehouse warehouse = new Warehouse();
-
-        // Create a new task
-        Task task = new Task();
-        task.setPart(new Part("Test Item","250",8));
-        task.getPart().setTrayId(-1);
-        task.setActionType(ActionType.INSERT_ITEM);
-
-        // Call the handleTask method
-        warehouse.processTask(task);
-        System.out.println(task.getPart().getTrayId());
+//        // Create an instance of AgvService
+//        //Mediator mediator = new Mediator();
+//        Warehouse warehouse = new Warehouse();
+//
+//        // Create a new task
+//        Task task = new Task();
+//        task.setPart(new Part("Test Item","250"));
+//        //task.getPart().setTrayId(-1);
+//        task.setActionType(ActionType.INSERT_ITEM);
+//
+//        // Call the handleTask method
+//        warehouse.processTask(task);
+//        //System.out.println(task.getPart().getTrayId());
     }
 }

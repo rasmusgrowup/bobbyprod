@@ -10,20 +10,20 @@ import com.bobbyprod.common.Tasks.Task;
 public class Main {
     public static void main(String[] args) {
         // Create the mediator
-        Mediator mediator = new Mediator();
-
-        // Create asset
-        Asset assemblyStation = new AssemblyStation("AS1", "Main Assembly Station");
-
-        // Register asset with the mediator
-        mediator.registerAsset(assemblyStation);
-
-        // Create task
-        Task assembleItem = new Task();
-        assembleItem.setActionType(ActionType.ASSEMBLE_ITEM);
-        assembleItem.setCompatibleAssetType(AssetType.ASSEMBLY_STATION);
-
-        // Assign tasks via mediator
-        System.out.println("\nAssigning ASSEMBLE_ITEM task to Assembly Station:");
+//        Mediator mediator = new Mediator();
+//
+//        // Create asset
+//        Asset assemblyStation = new AssemblyStation("AS1", "Main Assembly Station");
+//
+//        // Register asset with the mediator
+//        mediator.registerAsset(assemblyStation);
+//
+//        // Create task
+//        Task assembleItem = new Task();
+//        assembleItem.setActionType(ActionType.ASSEMBLE_ITEM);
+//        assembleItem.setCompatibleAssetType(AssetType.ASSEMBLY_STATION);
+//
+//        // Assign tasks via mediator
+//        System.out.println("\nAssigning ASSEMBLE_ITEM task to Assembly Station:");
     }
 }

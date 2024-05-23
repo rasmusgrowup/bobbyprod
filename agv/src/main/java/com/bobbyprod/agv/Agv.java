@@ -9,8 +9,8 @@ import com.bobbyprod.common.Interfaces.IMediator;
 import com.bobbyprod.common.States.AssetState;
 import com.bobbyprod.common.Tasks.Task;
 import com.bobbyprod.common.Tasks.TaskStatus;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 @Component
 public class Agv extends Asset {
@@ -20,24 +20,13 @@ public class Agv extends Asset {
     private int batteryLevel;
     protected IMediator mediator;
 
-    @Autowired
-    public Agv(AgvService agvService, AgvController agvController) {
+    public Agv() {
         super("AGV", "AGV-1", AssetType.AGV);
+        this.agvController = new AgvController(new RestTemplate());
+        this.agvService = new AgvService(agvController);
         this.mediator = Mediator.getInstance();
-        this.agvService = agvService;
-        this.agvController = agvController;
         this.batteryLevel = agvController.getBatteryLevel();
-        this.state = agvController.getState();
-    }
-
-    @Autowired
-    public void setAgvService(AgvService agvService) {
-        this.agvService = agvService;
-    }
-
-    @Autowired
-    public void setAgvController(AgvController agvController) {
-        this.agvController = agvController;
+        this.state = AssetState.IDLE;
     }
 
     @Override

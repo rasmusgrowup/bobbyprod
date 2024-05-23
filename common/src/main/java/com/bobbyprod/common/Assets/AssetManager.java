@@ -1,10 +1,12 @@
 package com.bobbyprod.common.Assets;
 
 import com.bobbyprod.common.States.AssetState;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.logging.Logger;
 
+@Service
 public class AssetManager {
     private static final Logger LOGGER = Logger.getLogger(AssetManager.class.getName());
     /**

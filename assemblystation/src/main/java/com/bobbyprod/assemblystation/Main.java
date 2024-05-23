@@ -12,28 +12,28 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-        // Create an instance of AssemblyStation
-        AssemblyStation assemblyStation = new AssemblyStation("AS001", "Assembly Station 1");
-
-        // Create a sample product and part to be used in the task
-        Product product = new Drone("Drone", "D001", assemblyStation);
-
-        // Create a task for the assembly station
-        Task task = new Task(ActionType.ASSEMBLE_ITEM, AssetType.ASSEMBLY_STATION, product);
-
-        // Have the assembly station accept and process the task
-        System.out.println("Assembly Station State before task: " + assemblyStation.getState());
-        assemblyStation.acceptTask(task);
-        System.out.println("Assembly Station State after task: " + assemblyStation.getState());
-
-
-
-        // Print the result of the task processing
-        System.out.println("Task Status: " + task.getStatus());
-        if (task.getStatus() == TaskStatus.TASK_COMPLETED) {
-            System.out.println("Task completed successfully.");
-        } else {
-            System.out.println("Task failed.");
-        }
+//        // Create an instance of AssemblyStation
+//        AssemblyStation assemblyStation = new AssemblyStation("AS001", "Assembly Station 1");
+//
+//        // Create a sample product and part to be used in the task
+//        Product product = new Drone("Drone", "D001", assemblyStation);
+//
+//        // Create a task for the assembly station
+//        Task task = new Task(ActionType.ASSEMBLE_ITEM, AssetType.ASSEMBLY_STATION, product);
+//
+//        // Have the assembly station accept and process the task
+//        System.out.println("Assembly Station State before task: " + assemblyStation.getState());
+//        assemblyStation.acceptTask(task);
+//        System.out.println("Assembly Station State after task: " + assemblyStation.getState());
+//
+//
+//
+//        // Print the result of the task processing
+//        System.out.println("Task Status: " + task.getStatus());
+//        if (task.getStatus() == TaskStatus.TASK_COMPLETED) {
+//            System.out.println("Task completed successfully.");
+//        } else {
+//            System.out.println("Task failed.");
+//        }
     }
 }

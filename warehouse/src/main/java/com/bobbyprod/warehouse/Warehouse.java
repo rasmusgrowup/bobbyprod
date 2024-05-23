@@ -20,10 +20,9 @@ public class Warehouse extends Asset{
 
     public Warehouse(){
         super("id - 1", "warehouse 1", AssetType.WAREHOUSE);
-        wController = new WarehouseController();
-        wService = new WarehouseService();
-        invArray = wService.setInventoryArray();
-        wController.pollWarehouseStatus();
+        this.wController = new WarehouseController();
+        this.wService = new WarehouseService();
+        this.state = wController.pollWarehouseStatus();
         this.mediator = Mediator.getInstance();
     }
 
@@ -60,5 +59,9 @@ public class Warehouse extends Asset{
     @Scheduled(fixedRate = 1000)
     public void updateState() {
         setState(wController.pollWarehouseStatus());
+    }
+
+    public WarehouseService getwService() {
+        return this.wService;
     }
 }

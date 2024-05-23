@@ -4,13 +4,13 @@ import com.bobbyprod.common.Assets.Asset;
 import com.bobbyprod.common.Assets.AssetManager;
 import com.bobbyprod.common.Assets.AssetType;
 import com.bobbyprod.common.Interfaces.IMediator;
-import com.bobbyprod.common.ProductionLine.ActivePartsList;
 import com.bobbyprod.common.ProductionLine.ActiveProductsList;
 import com.bobbyprod.common.ProductionLine.ProductionQueue;
 import com.bobbyprod.common.Products.Product;
-import com.bobbyprod.common.States.AssetState;
 import com.bobbyprod.common.Tasks.ActionType;
 import com.bobbyprod.common.Tasks.Task;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -18,10 +18,16 @@ import java.util.*;
 @Component
 public class Mediator implements IMediator {
     private static Mediator instance = null;
-    private List<Asset> assets; // List of all registered assets
-    private Map<Asset, Task> assetTasks; // Map to keep track of current tasks for each asset
+    private List<Asset> assets;// List of all registered assets
+    //private Map<Asset, Task> assetTasks; // Map to keep track of current tasks for each asset
     private ProductionQueue productionQueue;// Queue to manage production of products
     private ActiveProductsList activeProductsList; // List of products currently in production
+
+    public Mediator() {
+        this.assets = new ArrayList<>();
+        this.productionQueue = new ProductionQueue();
+        this.activeProductsList = new ActiveProductsList();
+    }
 
     /**
      * Mediator instance
@@ -36,11 +42,12 @@ public class Mediator implements IMediator {
     /**
      * Constructor
      */
-    public Mediator() {
-        assets = new ArrayList<>();
-        assetTasks = new HashMap<>();
-        productionQueue = new ProductionQueue();
-        activeProductsList = new ActiveProductsList();
+    @Autowired
+    public Mediator(List<Asset> assets, /*Map<Asset, Task> assetTasks,*/ ProductionQueue productionQueue, ActiveProductsList activeProductsList) {
+        this.assets = assets;
+        //this.assetTasks = assetTasks;
+        this.productionQueue = productionQueue;
+        this.activeProductsList = activeProductsList;
     }
 
     /**
@@ -50,7 +57,7 @@ public class Mediator implements IMediator {
     public void registerAsset(Asset asset) {
         if (!assets.contains(asset)) {
             assets.add(asset);
-            assetTasks.put(asset, null);
+            //assetTasks.put(asset, null);
         }
     }
 
@@ -202,9 +209,9 @@ public class Mediator implements IMediator {
         return assets;
     }
 
-    public Map<Asset, Task> getAssetTasks() {
-        return assetTasks;
-    }
+//    public Map<Asset, Task> getAssetTasks() {
+//        return assetTasks;
+//    }
 
     public ProductionQueue getProductionQueue() {
         return productionQueue;
@@ -226,9 +233,9 @@ public class Mediator implements IMediator {
         this.assets = assets;
     }
 
-    public void setAssetTasks(Map<Asset, Task> assetTasks) {
-        this.assetTasks = assetTasks;
-    }
+//    public void setAssetTasks(Map<Asset, Task> assetTasks) {
+//        this.assetTasks = assetTasks;
+//    }
 
     public void setProductionQueue(ProductionQueue productionQueue) {
         this.productionQueue = productionQueue;
@@ -250,13 +257,13 @@ public class Mediator implements IMediator {
         assets.remove(asset);
     }
 
-    public void addTask(Asset asset, Task task) {
-        assetTasks.put(asset, task);
-    }
-
-    public void removeTask(Asset asset) {
-        assetTasks.remove(asset);
-    }
+//    public void addTask(Asset asset, Task task) {
+//        assetTasks.put(asset, task);
+//    }
+//
+//    public void removeTask(Asset asset) {
+//        assetTasks.remove(asset);
+//    }
 
     public void addProduct(Product product) {
         productionQueue.addToQueue(product);

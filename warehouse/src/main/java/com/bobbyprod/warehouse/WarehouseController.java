@@ -12,14 +12,8 @@ import java.net.URLConnection;
 @Controller
 public class WarehouseController {
     private String wsURL = "http://localhost:8081/Service.asmx";
-    private AssetState state;
 
-    @Autowired
     public WarehouseController(){
-    }
-
-    public AssetState getState(){
-        return state;
     }
 
     public String sendSoapRequest(String xmlInput){
@@ -130,17 +124,15 @@ public class WarehouseController {
 
     public AssetState pollWarehouseStatus(){
         String jsonPart = getInventory();
-        AssetState state;
 
         if (jsonPart == null) {
             System.out.println("JSON part not found in the XML.");
-            state = AssetState.ERROR;
+            return AssetState.ERROR;
         } else {
             JSONObject jsonResponse = new JSONObject(jsonPart);
             int stateValue = jsonResponse.getInt("State");
 
-            state = stateValue == 0 ? AssetState.IDLE : stateValue == 1 ? AssetState.BUSY : AssetState.ERROR;
+            return stateValue == 0 ? AssetState.IDLE : stateValue == 1 ? AssetState.BUSY : AssetState.ERROR;
         }
-        return state;
     }
 }

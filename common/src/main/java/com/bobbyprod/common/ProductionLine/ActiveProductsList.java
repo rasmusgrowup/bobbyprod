@@ -1,9 +1,11 @@
 package com.bobbyprod.common.ProductionLine;
 
 import com.bobbyprod.common.Products.Product;
+import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
 
+@Component
 public class ActiveProductsList {
     private LinkedList<Product> activeProductionList = new LinkedList<Product>();
 

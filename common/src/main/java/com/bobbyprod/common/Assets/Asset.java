@@ -2,16 +2,14 @@ package com.bobbyprod.common.Assets;
 
 import com.bobbyprod.common.States.AssetState;
 import com.bobbyprod.common.Tasks.Task;
-import com.bobbyprod.common.Interfaces.IMediator;
 
 public abstract class Asset {
     private String id;
-    private String name;
+    private final String name;
     private final AssetType type;
     private AssetState state;
-    //protected IMediator mediator;
 
-    public Asset(String id, String name, AssetType type/*, IMediator mediator*/) {
+    public Asset(String id, String name, AssetType type) {
         this.id = id;
         this.name = name;
         this.type = type;

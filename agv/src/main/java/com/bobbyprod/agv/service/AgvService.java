@@ -1,7 +1,6 @@
 package com.bobbyprod.agv.service;
 
 import com.bobbyprod.agv.controller.AgvController;
-import com.bobbyprod.common.States.AssetState;
 import com.bobbyprod.common.Tasks.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class AgvService {
     private final AgvController agvController;
-    private AssetState state;
 
     @Autowired
     public AgvService(AgvController agvController) {
