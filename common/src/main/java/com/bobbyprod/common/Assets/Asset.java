@@ -31,12 +31,6 @@ public abstract class Asset {
     }
 
     public void handleTask(Task task) {
-        this.state = AssetState.BUSY;
-        if (processTask(task)) {
-            this.state = AssetState.IDLE;
-        } else {
-            this.state = AssetState.ERROR;
-        }
     }
 
     public abstract boolean processTask(Task task);

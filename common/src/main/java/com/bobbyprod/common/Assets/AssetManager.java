@@ -21,14 +21,15 @@ public class AssetManager {
         }
 
         Asset availableAsset = assets.stream()
-                .filter(asset -> asset.getType() == type)
+                .filter(asset -> asset.getType() == type && asset.getState() == AssetState.IDLE)
                 .findFirst()
                 .orElse(null);
 
         if (availableAsset == null) {
-            LOGGER.warning("No available asset of type " + type + " found.");
+            LOGGER.warning("No available idle asset of type " + type + " found.");
         }
 
         return availableAsset;
     }
+
 }
