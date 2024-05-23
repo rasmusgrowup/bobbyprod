@@ -6,28 +6,28 @@ import com.bobbyprod.common.Assets.Asset;
 import com.bobbyprod.common.Assets.AssetType;
 import com.bobbyprod.common.Communication.Mediator;
 import com.bobbyprod.common.Interfaces.IMediator;
-import com.bobbyprod.common.Interfaces.Observer;
 import com.bobbyprod.common.States.AssetState;
 import com.bobbyprod.common.Tasks.Task;
 import com.bobbyprod.common.Tasks.TaskStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 @Component
-public class Agv extends Asset implements Observer {
+public class Agv extends Asset {
     private AgvService agvService;
     private AgvController agvController;
     private AssetState state;
     private int batteryLevel;
-    protected Mediator mediator;
+    protected IMediator mediator;
 
-    public Agv() {
+    @Autowired
+    public Agv(AgvService agvService, AgvController agvController) {
         super("AGV", "AGV-1", AssetType.AGV);
-        this.batteryLevel = 100;
         this.mediator = Mediator.getInstance();
-        this.agvController = new AgvController(new RestTemplate());
-        this.agvService = new AgvService(agvController);
+        this.agvService = agvService;
+        this.agvController = agvController;
+        this.batteryLevel = agvController.getBatteryLevel();
+        this.state = agvController.getState();
     }
 
     @Autowired
@@ -38,14 +38,14 @@ public class Agv extends Asset implements Observer {
     @Autowired
     public void setAgvController(AgvController agvController) {
         this.agvController = agvController;
-        this.agvController.addObserver(this);
-        this.state = agvController.getState();
     }
 
     @Override
     public boolean processTask(Task task) {
-        this.state = AssetState.BUSY;
+
+        this.batteryLevel = getBatteryLevel();
         task.setStatus(TaskStatus.TASK_ACCEPTED);
+        this.state = AssetState.BUSY;
         mediator.notify(this, task);
         if (!agvService.handleTask(task)) {
             task.setStatus(TaskStatus.TASK_FAILED);
@@ -53,7 +53,9 @@ public class Agv extends Asset implements Observer {
             this.state = AssetState.ERROR;
             return false;
         } else {
+            System.out.println("Processing task ...");
             while (this.state == AssetState.BUSY) {
+                setState(agvController.getState());
             }
             task.setStatus(TaskStatus.TASK_COMPLETED);
             mediator.notify(this, task);
@@ -62,17 +64,14 @@ public class Agv extends Asset implements Observer {
     }
 
     public int getBatteryLevel() {
-        return batteryLevel;
+        return agvController.getBatteryLevel();
     }
 
-    public void setBatteryLevel(int batteryLevel) {
-        this.batteryLevel = batteryLevel;
+    public AssetState getState() {
+        return state;
     }
 
-    @Override
-    public void update() {
-        this.state = agvController.getState();
-        setBatteryLevel(batteryLevel = agvController.getBatteryLevel());
-        //System.out.println("AGV state: " + state + ", battery level: " + batteryLevel + "%");
+    public void setState(AssetState state) {
+        this.state = state;
     }
 }

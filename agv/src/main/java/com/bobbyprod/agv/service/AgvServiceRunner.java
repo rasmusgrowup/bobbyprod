@@ -2,31 +2,36 @@ package com.bobbyprod.agv.service;
 
 import com.bobbyprod.agv.Agv;
 import com.bobbyprod.agv.controller.AgvController;
-import com.bobbyprod.common.Communication.Mediator;
 import com.bobbyprod.common.Tasks.ActionType;
 import com.bobbyprod.common.Tasks.Task;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
-public class AgvServiceRunner {
-    public static void main(String[] args) {
-        run();
+@SpringBootApplication
+@ComponentScan(basePackages = {"com.bobbyprod.agv"})
+public class AgvServiceRunner implements CommandLineRunner {
+    private final AgvController agvController;
+    private final AgvService agvService;
+
+    @Autowired
+    public AgvServiceRunner(AgvController agvController, AgvService agvService) {
+        this.agvController = agvController;
+        this.agvService = agvService;
     }
 
-    public static void run() {
-        // Create an instance of AgvService
-        //Mediator mediator = new Mediator();
-        Agv agv = new Agv();
-        AgvController agvController = new AgvController(new RestTemplate());
-        AgvService agvService = new AgvService(agvController);
-
-        // Create a new task
+    @Override
+    public void run(String... args) {
+        Agv agv = new Agv(agvService, agvController);
         Task task = new Task();
         task.setActionType(ActionType.MOVE_TO_WAREHOUSE);
-
-        // Call the handleTask method
-        agvService.handleTask(task);
-
-        // Print out a message to indicate that the task has been handled
+        agv.processTask(task);
         System.out.println("Task has been handled.");
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(AgvServiceRunner.class, args);
     }
 }
