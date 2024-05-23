@@ -117,70 +117,85 @@ public class Mediator implements IMediator {
     }
 
     private void fleetManagement(Asset asset, Task task) {
-        //System.out.println(asset.getName() + " completed task: " + task.getActionType());
+        Asset availableAsset = null;
+        Task newTask = null;
+
         switch (task.getActionType()) {
             case PICK_ITEM:
-                Task moveToWarehouse = new Task(ActionType.MOVE_TO_WAREHOUSE, AssetType.AGV, task.getProduct());
-                asset = AssetManager.findAvailableAsset(assets, AssetType.AGV);
-                assignTask(asset, moveToWarehouse);
+                newTask = new Task(ActionType.MOVE_TO_WAREHOUSE, AssetType.AGV, task.getProduct());
+                availableAsset = waitForIdleAsset(AssetType.AGV);
                 break;
             case MOVE_TO_WAREHOUSE:
-                asset = AssetManager.findAvailableAsset(assets, AssetType.AGV);
+                availableAsset = waitForIdleAsset(AssetType.AGV);
                 if (task.getProduct().isAssembled()) {
-                    Task deliverItemToWarehouse = new Task(ActionType.PUT_ITEM_TO_WAREHOUSE, AssetType.AGV, task.getProduct());
-                    assignTask(asset, deliverItemToWarehouse);
+                    newTask = new Task(ActionType.PUT_ITEM_TO_WAREHOUSE, AssetType.AGV, task.getProduct());
                 } else {
-                    Task pickItemFromWarehouse = new Task(ActionType.PICK_ITEM_FROM_WAREHOUSE, AssetType.AGV, task.getProduct());
-                    assignTask(asset, pickItemFromWarehouse);
+                    newTask = new Task(ActionType.PICK_ITEM_FROM_WAREHOUSE, AssetType.AGV, task.getProduct());
                 }
                 break;
             case PICK_ITEM_FROM_WAREHOUSE:
-                asset = AssetManager.findAvailableAsset(assets, AssetType.AGV);
-                Task moveToAssemblyTask = new Task(ActionType.MOVE_TO_ASSEMBLY_STATION, AssetType.AGV, task.getProduct());
-                assignTask(asset, moveToAssemblyTask);
+                availableAsset = waitForIdleAsset(AssetType.AGV);
+                newTask = new Task(ActionType.MOVE_TO_ASSEMBLY_STATION, AssetType.AGV, task.getProduct());
                 break;
             case MOVE_TO_ASSEMBLY_STATION:
-                asset = AssetManager.findAvailableAsset(assets, AssetType.AGV);
+                availableAsset = waitForIdleAsset(AssetType.AGV);
                 if (task.getProduct().isAssembled()) {
-                    Task pickItemFromAssemblyStation = new Task(ActionType.PICK_ITEM_FROM_ASSEMBLY_STATION, AssetType.AGV, task.getProduct());
-                    assignTask(asset, pickItemFromAssemblyStation);
+                    newTask = new Task(ActionType.PICK_ITEM_FROM_ASSEMBLY_STATION, AssetType.AGV, task.getProduct());
                 } else {
-                    Task deliverItemToAssemblyStation = new Task(ActionType.PUT_ITEM_TO_ASSEMBLY_STATION, AssetType.AGV, task.getProduct());
-                    assignTask(asset, deliverItemToAssemblyStation);
+                    newTask = new Task(ActionType.PUT_ITEM_TO_ASSEMBLY_STATION, AssetType.AGV, task.getProduct());
                 }
                 break;
             case PUT_ITEM_TO_ASSEMBLY_STATION:
-                asset = AssetManager.findAvailableAsset(assets, AssetType.ASSEMBLY_STATION);
-                Task assembleItem = new Task(ActionType.ASSEMBLE_ITEM, AssetType.ASSEMBLY_STATION, task.getProduct());
-                assignTask(asset, assembleItem);
+                availableAsset = waitForIdleAsset(AssetType.ASSEMBLY_STATION);
+                newTask = new Task(ActionType.ASSEMBLE_ITEM, AssetType.ASSEMBLY_STATION, task.getProduct());
                 break;
             case ASSEMBLE_ITEM:
-                asset = AssetManager.findAvailableAsset(assets, AssetType.ASSEMBLY_STATION);
-                Task pickupFromAssemblyStation = new Task(ActionType.PICK_ITEM_FROM_ASSEMBLY_STATION, AssetType.AGV, task.getProduct());
-                assignTask(asset, pickupFromAssemblyStation);
+                availableAsset = waitForIdleAsset(AssetType.ASSEMBLY_STATION);
+                newTask = new Task(ActionType.PICK_ITEM_FROM_ASSEMBLY_STATION, AssetType.AGV, task.getProduct());
                 break;
             case PICK_ITEM_FROM_ASSEMBLY_STATION:
-                asset = AssetManager.findAvailableAsset(assets, AssetType.AGV);
-                Task deliverToWarehouse = new Task(ActionType.MOVE_TO_WAREHOUSE, AssetType.AGV, task.getProduct());
-                assignTask(asset, deliverToWarehouse);
+                availableAsset = waitForIdleAsset(AssetType.AGV);
+                newTask = new Task(ActionType.MOVE_TO_WAREHOUSE, AssetType.AGV, task.getProduct());
                 break;
             case PUT_ITEM_TO_WAREHOUSE:
-                asset = AssetManager.findAvailableAsset(assets, AssetType.WAREHOUSE);
-                Task insertItem = new Task(ActionType.INSERT_ITEM, AssetType.WAREHOUSE, task.getProduct());
-                assignTask(asset, insertItem);
+                availableAsset = waitForIdleAsset(AssetType.WAREHOUSE);
+                newTask = new Task(ActionType.INSERT_ITEM, AssetType.WAREHOUSE, task.getProduct());
                 activeProductsList.removeFromActiveProductionList(task.getProduct());
                 break;
             case INSERT_ITEM:
                 System.out.println("Product " + task.getProduct().getName() + " inserted into warehouse");
-                System.out.println(task.getActionType());
-                break;
+                return;
+        }
+
+        if (availableAsset != null && newTask != null) {
+            assignTask(availableAsset, newTask);
+        } else {
+            System.out.println("No available asset for action: " + task.getActionType());
         }
     }
+
+    private Asset waitForIdleAsset(AssetType type) {
+        Asset availableAsset = null;
+        while (availableAsset == null) {
+            availableAsset = AssetManager.findAvailableAsset(assets, type);
+            if (availableAsset == null) {
+                try {
+                    Thread.sleep(1000); // Wait for 1 second before retrying
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    System.out.println("Waiting for idle asset interrupted");
+                    break;
+                }
+            }
+        }
+        return availableAsset;
+    }
+
 
     private void assignTask(Asset asset, Task task) {
         System.out.println("Assigning task " + task.getActionType() + " to " + asset.getName());
         //assetTasks.put(asset, task);
-        asset.handleTask(task);
+        asset.processTask(task);
     }
 
     public List<Asset> getAssets() {
