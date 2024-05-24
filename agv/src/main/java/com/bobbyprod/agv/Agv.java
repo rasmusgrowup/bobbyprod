@@ -29,11 +29,27 @@ public class Agv extends Asset {
         this.state = AssetState.IDLE;
     }
 
+    public void handleRecharge(){
+        int battery = getBatteryLevel();
+        if(battery <= 90){
+            boolean result = agvController.loadProgram("MoveToChargerOperation", 1);
+            if (result) {
+                result = agvController.changeState(2);
+                System.out.println("Recharging");
+                while (batteryLevel < 100){
+                    batteryLevel = getBatteryLevel();
+                }
+                System.out.println("Fully Charged");
+            }
+        }
+    }
+
     @Override
     public boolean processTask(Task task) {
 
         this.batteryLevel = getBatteryLevel();
         task.setStatus(TaskStatus.TASK_ACCEPTED);
+        handleRecharge();
         this.state = AssetState.BUSY;
         mediator.notify(this, task);
         if (!agvService.handleTask(task)) {

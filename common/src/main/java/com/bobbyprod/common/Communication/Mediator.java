@@ -157,7 +157,7 @@ public class Mediator implements IMediator {
                 newTask = new Task(ActionType.ASSEMBLE_ITEM, AssetType.ASSEMBLY_STATION, task.getProduct());
                 break;
             case ASSEMBLE_ITEM:
-                availableAsset = waitForIdleAsset(AssetType.ASSEMBLY_STATION);
+                availableAsset = waitForIdleAsset(AssetType.AGV);
                 newTask = new Task(ActionType.PICK_ITEM_FROM_ASSEMBLY_STATION, AssetType.AGV, task.getProduct());
                 break;
             case PICK_ITEM_FROM_ASSEMBLY_STATION:

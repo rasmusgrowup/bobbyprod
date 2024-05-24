@@ -44,10 +44,20 @@ public class AppApplication {
 			System.out.println(asset.getName() + ", type: " + asset.getType() + ", state: " + asset.getState());
 		}
 		System.out.println();
+
 		Product product = new Drone("Drone1", "Drone1", null);
-		warehouse.getwService().clearInventory();
-		warehouse.getwService().insertItem(product.getName(), warehouse.getwService().findEmptyShelfId());
+		warehouse.getwService().insertItem(product);
+
+		Product product1 = new Drone("Drone2", "Drone2", null);
+		warehouse.getwService().insertItem(product1);
+
+		Product product2 = new Drone("Drone3", "Drone3", null);
+		warehouse.getwService().insertItem(product2);
+
 		mediator.getProductionQueue().addToQueue(product);
+		mediator.getProductionQueue().addToQueue(product1);
+		mediator.getProductionQueue().addToQueue(product2);
+
 		mediator.startProduction();
 	}
 }

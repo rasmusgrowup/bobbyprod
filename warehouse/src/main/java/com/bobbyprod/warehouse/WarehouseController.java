@@ -83,6 +83,11 @@ public class WarehouseController {
                         "</PickItem>" + "</Body>" + "</Envelope>";
 
         String message = sendSoapRequest(xmlInput);
+        int firstXmlTagIndex = message.indexOf("<");
+        if (firstXmlTagIndex == -1) {
+            throw new IllegalArgumentException("Invalid XML content: No XML tag found");
+        }
+        message = message.substring(firstXmlTagIndex);
         return message.equals("<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">  <s:Body>    <PickItemResponse xmlns=\"http://tempuri.org/\">      <PickItemResult>Received pick operation.</PickItemResult>    </PickItemResponse>  </s:Body></s:Envelope>");
     }
 
@@ -93,6 +98,11 @@ public class WarehouseController {
                         "<name>" + name + "</name>" + "</InsertItem>" + "</Body>" + "</Envelope>";
 
         String message = sendSoapRequest(xmlInput);
+        int firstXmlTagIndex = message.indexOf("<");
+        if (firstXmlTagIndex == -1) {
+            throw new IllegalArgumentException("Invalid XML content: No XML tag found");
+        }
+        message = message.substring(firstXmlTagIndex);
         return message.equals("<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">  <s:Body>    <InsertItemResponse xmlns=\"http://tempuri.org/\">      <InsertItemResult>Received insert operation.</InsertItemResult>    </InsertItemResponse>  </s:Body></s:Envelope>");
     }
 

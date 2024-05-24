@@ -17,9 +17,15 @@ public class AssemblyStation extends Asset {
     private Mediator mediator;
 
     public AssemblyStation() {
-        super("id", "name", AssetType.ASSEMBLY_STATION);
+        super("id", "AssemblyStation", AssetType.ASSEMBLY_STATION);
         this.state = AssetState.IDLE;
         this.mediator = Mediator.getInstance();
+        mqttClient = new ASClient(this);
+        try {
+            mqttClient.connect();
+        } catch (MqttException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -42,6 +48,7 @@ public class AssemblyStation extends Asset {
                 case ASSEMBLE_ITEM:
                     AssemblyCommand command = new AssemblyCommand(1);
                     mqttClient.publish("emulator/operation", command);
+                    task.getProduct().setAssembled(true);
                     task.setStatus(TaskStatus.TASK_COMPLETED);
                     mediator.notify(this, task);
                     return true;

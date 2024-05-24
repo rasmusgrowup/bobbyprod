@@ -31,6 +31,9 @@ public class Warehouse extends Asset{
         task.setStatus(TaskStatus.TASK_ACCEPTED);
         mediator.notify(this,task);
         if(wService.handleTask(task)){
+            do{
+                wController.pollWarehouseStatus();
+            }while(state == AssetState.BUSY);
             task.setStatus(TaskStatus.TASK_COMPLETED);
             mediator.notify(this,task);
             invArray = wService.setInventoryArray();

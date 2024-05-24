@@ -1,5 +1,6 @@
 package com.bobbyprod.warehouse;
 
+import com.bobbyprod.common.Products.Product;
 import com.bobbyprod.common.States.AssetState;
 import com.bobbyprod.common.Tasks.Task;
 import org.json.JSONArray;
@@ -37,8 +38,16 @@ public class WarehouseService {
         return client.pickItem(trayId);
     }
 
-    public boolean insertItem(String name,int id){
-        return client.insertItem(name,id);
+    public boolean insertItem(Product product){
+        int emptyShelf = findEmptyShelfId();
+        product.setTrayId(emptyShelf);
+        String name;
+        if(product.isAssembled()){
+            name = product.getName();
+        } else {
+            name = product.getName() + " Part";
+        }
+        return client.insertItem(name,emptyShelf);
     }
 
     public int findDronePartId(String name){
@@ -114,9 +123,7 @@ public class WarehouseService {
         boolean result = false;
         switch (task.getActionType()){
             case INSERT_ITEM:
-                    int emptyShelf = findEmptyShelfId();
-                    task.getProduct().setTrayId(emptyShelf);
-                    result = insertItem(task.getProduct().getName(),emptyShelf);
+                    result = insertItem(task.getProduct());
                 break;
             case PICK_ITEM:
                     result = pickItem(task.getProduct().getTrayId());
