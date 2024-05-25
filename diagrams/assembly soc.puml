@@ -1,0 +1,37 @@
+@startuml
+title "Bullet class diagram"
+component common {
+    interface AssemblyStationSPI {
+        +createAssemblyStationService()
+    }
+    interface IAssemblyStationService {
+        +startProcess()
+        +getStatus()
+        +checkHealth()
+    }
+}
+
+component assemblystation {
+    class ASClient {
+            +startProcess()
+            +getStatus()
+            +checkHealth()
+    }
+
+    class AssemblyCommand {
+    }
+
+    class AssemblyStation {
+    +createAssemblyStationService()
+    }
+}
+    note right of AssemblyStation
+        This acts as main object (asset)
+    end note
+
+AssemblyStationSPI <|.. AssemblyStation
+IAssemblyStationService <|.. ASClient
+
+AssemblyCommand --> AssemblyStation
+ASClient --> AssemblyStation : updates
+@enduml
