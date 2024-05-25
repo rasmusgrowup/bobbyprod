@@ -1,5 +1,5 @@
 @startuml
-title "Bullet class diagram"
+title "Assembly Station - Separation of Concerns"
 component common {
     interface AssemblyStationSPI {
         +createAssemblyStationService()
