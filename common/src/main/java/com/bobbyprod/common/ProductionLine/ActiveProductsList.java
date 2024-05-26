@@ -21,4 +21,7 @@ public class ActiveProductsList {
         activeProductionList.clear();
     }
 
+    public LinkedList<Product> getActiveProductionList() {
+        return activeProductionList;
+    }
 }

@@ -1,6 +1,7 @@
 package com.bobbyprod.warehouse;
 
 import com.bobbyprod.common.Products.Product;
+import com.bobbyprod.common.Products.ProductStatus;
 import com.bobbyprod.common.States.AssetState;
 import com.bobbyprod.common.Tasks.Task;
 import org.json.JSONArray;
@@ -124,9 +125,11 @@ public class WarehouseService {
         switch (task.getActionType()){
             case INSERT_ITEM:
                     result = insertItem(task.getProduct());
+                    task.getProduct().setStatus(ProductStatus.IN_STORAGE);
                 break;
             case PICK_ITEM:
                     result = pickItem(task.getProduct().getTrayId());
+                    task.getProduct().setStatus(ProductStatus.READY_FOR_PICKUP_AT_WAREHOUSE);
                 break;
             case FILL_PARTS:
                 clearInventory();

@@ -1,95 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data page</title>
-    <!-- CSS -->
-    <link th:href="@{/css/index.css}" rel="stylesheet"></link>
-    <!-- JS -->
-    <script th:src="@{/js/main.js}" type="text/javascript" defer></script>
-</head>
-<body>
-<header>
-    <h1>Bobby Production App - Data & Production Control</h1>
-    <nav>
-        <button>
-            <a href="/components">COMPS</a>
-        </button>
-        <button class="active">DATA</button>
-    </nav>
-</header>
-<main>
-    <section class="column">
-        <h2>Production Control</h2>
-        <div class="card">
-            <p>ID: 1</p>
-            <p>Status: Active</p>
-            <button th:id="actionButton">START</button>
-            <button>PAUSE</button>
-            <button>CANCEL</button>
-        </div>
-        <div class="card">
-            <p>Total production in order: 125</p>
-            <p>Total products finished: 45</p>
-        </div>
-        <button class="add-button">ADD</button>
-        <div class="queue">
-            <div class="card">
-                <p>ID: 2</p>
-                <p>Amount: 100</p>
-                <p>Status: Waiting</p>
-                <button>CANCEL</button>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Data page</title>
+        <!-- CSS -->
+        <link th:href="@{/css/index.css}" rel="stylesheet"></link>
+        <!-- JS -->
+        <script th:src="@{/js/main.js}" type="text/javascript" defer></script>
+    </head>
+    <body>
+    <main>
+        <header>
+            <h1>Bobby Production App - Data & Production Control</h1>
+        </header>
+        <section class="column">
+            <div>
+                <h2>Assets:</h2>
+                {
+                    <div id="assetContainer"></div>
+                }
             </div>
-            <div class="card">
-                <p>ID: 3</p>
-                <p>Amount: 100</p>
-                <p>Status: Waiting</p>
-                <button>CANCEL</button>
+
+            <div>
+                <h2>Production Queue:</h2>
+                {
+                <div id="queueContainer"></div>
+                }
             </div>
-            <div class="card">
-                <p>ID: 4</p>
-                <p>Amount: 100</p>
-                <p>Status: Waiting</p>
-                <button>CANCEL</button>
+
+            <div>
+                <h2>Finished Products:</h2>
+                {
+                <div id="finishedProductsContainer"></div>
+                }
             </div>
-            <div class="card">
-                <p>ID: 5</p>
-                <p>Amount: 100</p>
-                <p>Status: Waiting</p>
-                <button>CANCEL</button>
-            </div>
-            <div class="card">
-                <p>ID: 6</p>
-                <p>Amount: 100</p>
-                <p>Status: Waiting</p>
-                <button>CANCEL</button>
-            </div>
-        </div>
-    </section>
-    <section class="column">
-        <h2>History</h2>
-        <div class="card">
-            <p>ID: 10</p>
-            <p>Products: 125</p>
-            <p>Timestamp: 20:45</p>
-        </div>
-        <div class="card">
-            <p>ID: 20</p>
-            <p>Products: 125</p>
-            <p>Timestamp: 20:45</p>
-        </div>
-        <div class="card">
-            <p>ID: 30</p>
-            <p>Products: 125</p>
-            <p>Timestamp: 20:45</p>
-        </div>
-        <div class="card">
-            <p>ID: 40</p>
-            <p>Products: 125</p>
-            <p>Timestamp: 20:45</p>
-        </div>
-    </section>
-</main>
-</body>
+        </section>
+    </main>
+    </body>
 </html>

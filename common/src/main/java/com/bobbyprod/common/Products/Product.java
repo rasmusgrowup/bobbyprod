@@ -20,7 +20,7 @@ public class Product {
         this.id = id;
         this.location = location;
         this.isAssembled = false;
-        this.status = null;
+        this.status = ProductStatus.IN_STORAGE;
     }
 
     public int getTrayId() {

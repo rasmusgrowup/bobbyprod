@@ -24,4 +24,7 @@ public class ProductionQueue {
         return queue.isEmpty();
     }
 
+    public LinkedList<Product> getQueue(){
+        return queue;
+    }
 }
