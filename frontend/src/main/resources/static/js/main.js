@@ -33,7 +33,7 @@ function updateQueueContainer(products) {
         div.style.marginLeft = '2rem';
 
         // Set the content of the div.
-        div.textContent = `"Name": { "${product.name}", "Status:" "${product.status}" }`;
+        div.textContent = `"Name": { "${product.name}", "ID": "${product.id}", "Status:" "${product.status}" }`;
 
         // Append the div to the container.
         container.appendChild(div);
@@ -154,8 +154,8 @@ function update() {
 // Fetch assets when the page loads
 setInterval(update, 500);
 
-/*document.getElementById("actionButton").addEventListener("click", function() {
-    fetch('/start', {
+document.getElementById("startProduction").addEventListener("click", function() {
+    fetch('/api/start-production', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -173,4 +173,25 @@ setInterval(update, 500);
         .catch(error => {
             console.error('Error:', error);
         });
-});*/
+});
+
+document.getElementById("addProductButton").addEventListener("click", function() {
+    fetch('/api/add-product', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => {
+            if (response.ok) {
+                // Handle success
+                console.log('Action performed successfully');
+            } else {
+                // Handle error
+                console.error('Failed to perform action');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+});

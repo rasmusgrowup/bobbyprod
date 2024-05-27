@@ -2,3 +2,33 @@ body {
     color: black;
     font-family: monospace;
 }
+
+section {
+    padding: 1rem;
+}
+
+.buttons {
+    bottom: 0;
+    cursor: pointer;
+    display: flex;
+    justify-content: flex-end;
+    left: 0;
+    position: absolute;
+    padding: 1rem;
+    width: calc(100% - 2rem);
+
+    button {
+        background: transparent;
+        border: 1px solid black;
+        border-radius: 12px;
+        color: black;
+        font-size: 1rem;
+        margin-left: .5rem;
+        padding: .75rem 1.25rem;
+    }
+
+    button:last-of-type {
+        background: black;
+        color: white;
+    }
+}

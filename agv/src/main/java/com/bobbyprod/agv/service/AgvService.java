@@ -87,4 +87,8 @@ public class AgvService {
 
         return result;
     }
+
+    public AgvController getAgvController() {
+        return agvController;
+    }
 }

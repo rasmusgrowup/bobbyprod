@@ -7,7 +7,18 @@ import java.util.LinkedList;
 
 @Component
 public class ProductionQueue {
+    private static ProductionQueue instance = null;
     private LinkedList<Product> queue= new LinkedList<Product>();
+
+    private ProductionQueue() {
+    }
+
+    public static synchronized ProductionQueue getInstance() {
+        if (instance == null) {
+            instance = new ProductionQueue();
+        }
+        return instance;
+    }
 
     public void addToQueue (Product product){
         queue.add(product);

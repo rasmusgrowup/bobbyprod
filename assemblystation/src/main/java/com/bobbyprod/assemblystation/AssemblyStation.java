@@ -3,6 +3,7 @@ package com.bobbyprod.assemblystation;
 import com.bobbyprod.common.Assets.Asset;
 import com.bobbyprod.common.Assets.AssetType;
 import com.bobbyprod.common.Communication.Mediator;
+import com.bobbyprod.common.Interfaces.IMediator;
 import com.bobbyprod.common.Products.ProductStatus;
 import com.bobbyprod.common.States.AssetState;
 import com.bobbyprod.common.Tasks.Task;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AssemblyStation extends Asset {
     private AssetState state;
-    private final Mediator mediator;
+    private final IMediator mediator;
     private final AssemblyStationService assemblyStationService;
 
     public AssemblyStation(AssemblyStationService assemblyStationService) {
@@ -31,7 +32,6 @@ public class AssemblyStation extends Asset {
         boolean assemblyStarted = assemblyStationService.startAssemblyProcess(new AssemblyCommand(1));
 
         if (assemblyStarted) {
-            System.out.println(this.getName() + "Processing task...");
 
             try {
                 Thread.sleep(2000); // Sleep for 2 seconds to give the machine time to change its state
@@ -40,7 +40,7 @@ public class AssemblyStation extends Asset {
             }
 
             while (fetchMachineStatus() == AssetState.BUSY) {
-                System.out.println("Machine is busy, waiting for it to finish...");
+                //System.out.println(this.getName() + " is processing task " + task.getActionType());
                 try {
                     Thread.sleep(100); // Sleep for 1 second
                 } catch (InterruptedException e) {

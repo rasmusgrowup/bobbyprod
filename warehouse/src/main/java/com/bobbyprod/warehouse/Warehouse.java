@@ -14,15 +14,13 @@ import org.springframework.stereotype.Component;
 public class Warehouse extends Asset{
     private AssetState state;
     private WarehouseService wService;
-    private WarehouseController wController;
     private String[] invArray;
     private IMediator mediator;
 
-    public Warehouse(){
+    public Warehouse(WarehouseService wService){
         super("id - 1", "warehouse 1", AssetType.WAREHOUSE);
-        this.wController = new WarehouseController();
-        this.wService = new WarehouseService();
-        this.state = wController.pollWarehouseStatus();
+        this.wService = wService;
+        this.state = wService.getWarehouseController().pollWarehouseStatus();
         this.mediator = Mediator.getInstance();
     }
 
@@ -33,7 +31,7 @@ public class Warehouse extends Asset{
         if(wService.handleTask(task)){
             this.state = AssetState.BUSY;
             while (state == AssetState.BUSY) {
-                this.state = wController.pollWarehouseStatus();
+                this.state = wService.getWarehouseController().pollWarehouseStatus();
             }
             task.setStatus(TaskStatus.TASK_COMPLETED);
             mediator.notify(this,task);
@@ -62,7 +60,7 @@ public class Warehouse extends Asset{
 
     @Scheduled(fixedRate = 1000)
     public void updateState() {
-        setState(wController.pollWarehouseStatus());
+        setState(wService.getWarehouseController().pollWarehouseStatus());
     }
 
     public WarehouseService getwService() {
