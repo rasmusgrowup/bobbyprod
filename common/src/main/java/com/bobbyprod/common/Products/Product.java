@@ -9,18 +9,16 @@ public class Product {
     private int trayId;
     private String name;
     private String id;
-    private Asset location;
     private boolean isAssembled;
     private ProductStatus status;
     private ArrayList<Part> partsList;
-    private ArrayList<Task> tasks;
 
-    public Product(String name, String id, Asset location) {
+    public Product(String name, String id, ArrayList<Part> partsList) {
         this.name = name;
         this.id = id;
-        this.location = location;
         this.isAssembled = false;
         this.status = ProductStatus.IN_STORAGE;
+        this.partsList = partsList;
     }
 
     public int getTrayId() {
@@ -47,14 +45,6 @@ public class Product {
         this.id = id;
     }
 
-    public Asset getLocation() {
-        return location;
-    }
-
-    public void setLocation(Asset location) {
-        this.location = location;
-    }
-
     public ArrayList<Part> getPartsList() {
         return partsList;
     }
@@ -69,14 +59,6 @@ public class Product {
 
     private void setPartsList(ArrayList<Part> partsList) {
         this.partsList = partsList;
-    }
-
-    public ArrayList<Task> getTasks() {
-        return tasks;
-    }
-
-    public void setTasks(ArrayList<Task> tasks) {
-        this.tasks = tasks;
     }
 
     public void setStatus(ProductStatus status) {

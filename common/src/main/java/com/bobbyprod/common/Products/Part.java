@@ -5,7 +5,6 @@ import com.bobbyprod.common.Assets.Asset;
 public class Part {
     private String name;
     private String id;
-    private Asset location;
 
     public Part(String name, String id) {
         this.name = name;
@@ -26,9 +25,5 @@ public class Part {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public void setLocation(Asset location) {
-        this.location = location;
     }
 }
