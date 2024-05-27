@@ -5,28 +5,27 @@ import com.bobbyprod.common.Assets.AssetManager;
 import com.bobbyprod.common.Assets.AssetType;
 import com.bobbyprod.common.Interfaces.IMediator;
 import com.bobbyprod.common.ProductionLine.ActiveProductsList;
+import com.bobbyprod.common.ProductionLine.AssetsList;
+import com.bobbyprod.common.ProductionLine.FinishedProducts;
 import com.bobbyprod.common.ProductionLine.ProductionQueue;
 import com.bobbyprod.common.Products.Product;
 import com.bobbyprod.common.Tasks.ActionType;
 import com.bobbyprod.common.Tasks.Task;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-
-import java.util.*;
 
 @Component
 public class Mediator implements IMediator {
     private static Mediator instance = null;
-    private List<Asset> assets;// List of all registered assets
-    //private Map<Asset, Task> assetTasks; // Map to keep track of current tasks for each asset
+    private AssetsList assets;// List of all registered assets
     private ProductionQueue productionQueue;// Queue to manage production of products
     private ActiveProductsList activeProductsList; // List of products currently in production
+    private FinishedProducts finishedProducts; // List of products currently in production
 
     public Mediator() {
-        this.assets = new ArrayList<>();
-        this.productionQueue = new ProductionQueue();
-        this.activeProductsList = new ActiveProductsList();
+        this.assets = AssetsList.getInstance();
+        this.productionQueue = ProductionQueue.getInstance();
+        this.activeProductsList = ActiveProductsList.getInstance();
+        this.finishedProducts = FinishedProducts.getInstance();
     }
 
     /**
@@ -40,24 +39,13 @@ public class Mediator implements IMediator {
     }
 
     /**
-     * Constructor
-     */
-    @Autowired
-    public Mediator(List<Asset> assets, /*Map<Asset, Task> assetTasks,*/ ProductionQueue productionQueue, ActiveProductsList activeProductsList) {
-        this.assets = assets;
-        //this.assetTasks = assetTasks;
-        this.productionQueue = productionQueue;
-        this.activeProductsList = activeProductsList;
-    }
-
-    /**
      * Registers an asset with the mediator
      * @param asset Asset to be registered
      */
+    @Override
     public void registerAsset(Asset asset) {
         if (!assets.contains(asset)) {
-            assets.add(asset);
-            //assetTasks.put(asset, null);
+            assets.addAsset(asset);
         }
     }
 
@@ -76,25 +64,6 @@ public class Mediator implements IMediator {
             } else {
                 System.out.println("No warehouse asset available");
             }
-//            //System.out.println("Product added to active production list");
-//            for (Part part : product.getPartsList()) {
-//                //System.out.println("Processing part: " + part.getName());
-//                activePartsList.addToActiveProductionList(part);
-//                //System.out.println("Part added to active production list");
-//                Task task = new Task(ActionType.PICK_ITEM, AssetType.WAREHOUSE, part);
-//                //System.out.println("Creating task: " + task.getActionType());
-//                Asset warehouseAsset = AssetManager.findAvailableAsset(assets,AssetType.WAREHOUSE);
-//                //System.out.println("Finding available warehouse asset");
-//                if (warehouseAsset != null) {
-////                    System.out.println("Assigning task to warehouse asset");
-//                    assignTask(warehouseAsset, task);
-//                    //System.out.println("Task assigned to warehouse asset");
-//                } else {
-//                    //System.out.println("No warehouse asset available");
-//                }
-//            }
-            productionQueue.removeFromQueue(product);
-            //System.out.println("Product removed from production queue");
         }
         System.out.println("Production queue empty");
     }
@@ -167,7 +136,9 @@ public class Mediator implements IMediator {
             case PUT_ITEM_TO_WAREHOUSE:
                 availableAsset = waitForIdleAsset(AssetType.WAREHOUSE);
                 newTask = new Task(ActionType.INSERT_ITEM, AssetType.WAREHOUSE, task.getProduct());
-                activeProductsList.removeFromActiveProductionList(task.getProduct());
+                ProductionQueue.getInstance().removeFromQueue(task.getProduct());
+                ActiveProductsList.getInstance().removeFromActiveProductionList(task.getProduct());
+                FinishedProducts.getInstance().addToFinishedProducts(task.getProduct());
                 break;
             case INSERT_ITEM:
                 System.out.println("Product " + task.getProduct().getName() + " inserted into warehouse");
@@ -205,71 +176,7 @@ public class Mediator implements IMediator {
         asset.processTask(task);
     }
 
-    public List<Asset> getAssets() {
-        return assets;
-    }
-
-//    public Map<Asset, Task> getAssetTasks() {
-//        return assetTasks;
-//    }
-
-    public ProductionQueue getProductionQueue() {
-        return productionQueue;
-    }
-
-//    public ActiveProductsList getActiveProductsList() {
-//        return activeProductsList;
-//    }
-//
-//    public ActivePartsList getActivePartsList() {
-//        return activePartsList;
-//    }
-
     public static void setInstance(Mediator instance) {
         Mediator.instance = instance;
-    }
-
-    public void setAssets(List<Asset> assets) {
-        this.assets = assets;
-    }
-
-//    public void setAssetTasks(Map<Asset, Task> assetTasks) {
-//        this.assetTasks = assetTasks;
-//    }
-
-    public void setProductionQueue(ProductionQueue productionQueue) {
-        this.productionQueue = productionQueue;
-    }
-
-//    public void setActiveProductsList(ActiveProductsList activeProductsList) {
-//        this.activeProductsList = activeProductsList;
-//    }
-//
-//    public void setActivePartsList(ActivePartsList activePartsList) {
-//        this.activePartsList = activePartsList;
-//    }
-
-    public void addAsset(Asset asset) {
-        assets.add(asset);
-    }
-
-    public void removeAsset(Asset asset) {
-        assets.remove(asset);
-    }
-
-//    public void addTask(Asset asset, Task task) {
-//        assetTasks.put(asset, task);
-//    }
-//
-//    public void removeTask(Asset asset) {
-//        assetTasks.remove(asset);
-//    }
-
-    public void addProduct(Product product) {
-        productionQueue.addToQueue(product);
-    }
-
-    public void removeProduct(Product product) {
-        productionQueue.removeFromQueue(product);
     }
 }

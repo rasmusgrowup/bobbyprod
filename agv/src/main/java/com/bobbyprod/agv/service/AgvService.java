@@ -1,6 +1,7 @@
 package com.bobbyprod.agv.service;
 
 import com.bobbyprod.agv.controller.AgvController;
+import com.bobbyprod.common.Products.ProductStatus;
 import com.bobbyprod.common.Tasks.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,13 +20,18 @@ public class AgvService {
         switch (task.getActionType()) {
             case MOVE_TO_WAREHOUSE:
                 //Drains 5% power
+                //task.getProduct().setStatus(ProductStatus.EN_ROUTE_TO_WAREHOUSE);
                 result = agvController.loadProgram("MoveToStorageOperation", 1);
                 if (result) {
                     result = agvController.changeState(2);
                 }
+                if (task.getProduct().isAssembled()) {
+                    task.getProduct().setStatus(ProductStatus.EN_ROUTE_TO_WAREHOUSE);
+                }
                 break;
             case MOVE_TO_ASSEMBLY_STATION:
                 //Drains 5% power
+                task.getProduct().setStatus(ProductStatus.EN_ROUTE_TO_ASSEMBLY_STATION);
                 result = agvController.loadProgram("MoveToAssemblyOperation", 1);
                 if (result) {
                     result = agvController.changeState(2);
@@ -40,6 +46,7 @@ public class AgvService {
                 break;
             case PICK_ITEM_FROM_WAREHOUSE:
                 //Drains 1% power
+                task.getProduct().setStatus(ProductStatus.TRANSFERRING_TO_AGV);
                 result = agvController.loadProgram("PickWarehouseOperation", 1);
                 if (result) {
                     result = agvController.changeState(2);
@@ -47,6 +54,7 @@ public class AgvService {
                 break;
             case PUT_ITEM_TO_WAREHOUSE:
                 //Drains 1% power
+                task.getProduct().setStatus(ProductStatus.TRANSFERRING_TO_WAREHOUSE);
                 result = agvController.loadProgram("PutWarehouseOperation", 1);
                 if (result) {
                     result = agvController.changeState(2);
@@ -54,6 +62,7 @@ public class AgvService {
                 break;
             case PICK_ITEM_FROM_ASSEMBLY_STATION:
                 //Drains 1% power
+                task.getProduct().setStatus(ProductStatus.TRANSFERRING_TO_AGV);
                 result = agvController.loadProgram("PickAssemblyOperation", 1);
                 if (result) {
                     result = agvController.changeState(2);
@@ -61,6 +70,7 @@ public class AgvService {
                 break;
             case PUT_ITEM_TO_ASSEMBLY_STATION:
                 //Drains 1% power
+                task.getProduct().setStatus(ProductStatus.TRANSFERRING_TO_ASSEMBLY_STATION);
                 result = agvController.loadProgram("PutAssemblyOperation", 1);
                 if (result) {
                     result = agvController.changeState(2);
@@ -76,5 +86,9 @@ public class AgvService {
         }
 
         return result;
+    }
+
+    public AgvController getAgvController() {
+        return agvController;
     }
 }

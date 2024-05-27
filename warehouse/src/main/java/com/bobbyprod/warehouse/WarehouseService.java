@@ -1,29 +1,32 @@
 package com.bobbyprod.warehouse;
 
 import com.bobbyprod.common.Products.Product;
+import com.bobbyprod.common.Products.ProductStatus;
 import com.bobbyprod.common.States.AssetState;
 import com.bobbyprod.common.Tasks.Task;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class WarehouseService {
-    private WarehouseController client;
+    private WarehouseController warehouseController;
 
-    public WarehouseService(){
-     client = new WarehouseController();
+    @Autowired
+    public WarehouseService(WarehouseController client){
+        this.warehouseController = client;
     }
 
     public void clearInventory() {
         for (int i = 1; i <= 10; i++) {
-            client.pickItem(i);
+            warehouseController.pickItem(i);
         }
     }
 
     public boolean fillInventory(String name) {
         while(findEmptyShelfId() != -1) {
-            if(!client.insertItem(name, findEmptyShelfId())){
+            if(!warehouseController.insertItem(name, findEmptyShelfId())){
                 return false;
             }
         }
@@ -31,11 +34,11 @@ public class WarehouseService {
     }
 
     public boolean pickItem(String name){
-        return client.pickItem(findDronePartId(name));
+        return warehouseController.pickItem(findDronePartId(name));
     }
 
     public boolean pickItem(int trayId){
-        return client.pickItem(trayId);
+        return warehouseController.pickItem(trayId);
     }
 
     public boolean insertItem(Product product){
@@ -47,11 +50,11 @@ public class WarehouseService {
         } else {
             name = product.getName() + " Part";
         }
-        return client.insertItem(name,emptyShelf);
+        return warehouseController.insertItem(name,emptyShelf);
     }
 
     public int findDronePartId(String name){
-        String inv = client.getInventory();
+        String inv = warehouseController.getInventory();
         JSONObject jsonResponse = new JSONObject(inv);
         JSONArray inventoryItems = jsonResponse.getJSONArray("Inventory");
 
@@ -66,7 +69,7 @@ public class WarehouseService {
     }
 
     public String[] setInventoryArray() {
-        String inv = client.getInventory();
+        String inv = warehouseController.getInventory();
         JSONObject jsonObject = new JSONObject(inv);
         JSONArray inventoryArray = jsonObject.getJSONArray("Inventory");
         String[] contentArray = new String[10];
@@ -81,7 +84,7 @@ public class WarehouseService {
 
     public int findEmptyShelfId() {
         // Assuming 'in' is the JSON string embedded in the XML.
-        String inv = client.getInventory();
+        String inv = warehouseController.getInventory();
         JSONObject jsonResponse = new JSONObject(inv);
         JSONArray inventoryItems = jsonResponse.getJSONArray("Inventory");
         for (int i = 0; i < inventoryItems.length(); i++) {
@@ -95,7 +98,7 @@ public class WarehouseService {
     }
 
     public AssetState checkState() {
-        String jsonPart = client.getInventory();
+        String jsonPart = warehouseController.getInventory();
 
         if (jsonPart == null) {
             System.out.println("JSON part not found in the XML.");
@@ -124,9 +127,11 @@ public class WarehouseService {
         switch (task.getActionType()){
             case INSERT_ITEM:
                     result = insertItem(task.getProduct());
+                    task.getProduct().setStatus(ProductStatus.IN_STORAGE);
                 break;
             case PICK_ITEM:
                     result = pickItem(task.getProduct().getTrayId());
+                    task.getProduct().setStatus(ProductStatus.READY_FOR_PICKUP_AT_WAREHOUSE);
                 break;
             case FILL_PARTS:
                 clearInventory();
@@ -136,5 +141,9 @@ public class WarehouseService {
                 System.out.println("Unknown action type" + task.getActionType());
         }
         return result;
+    }
+
+    public WarehouseController getWarehouseController() {
+        return warehouseController;
     }
 }

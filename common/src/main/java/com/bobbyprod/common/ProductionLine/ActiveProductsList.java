@@ -7,7 +7,18 @@ import java.util.LinkedList;
 
 @Component
 public class ActiveProductsList {
+    private static ActiveProductsList instance = null;
     private LinkedList<Product> activeProductionList = new LinkedList<Product>();
+
+    private ActiveProductsList() {
+    }
+
+    public static synchronized ActiveProductsList getInstance() {
+        if (instance == null) {
+            instance = new ActiveProductsList();
+        }
+        return instance;
+    }
 
     public void addToActiveProductionList(Product product) {
         activeProductionList.add(product);
@@ -21,4 +32,7 @@ public class ActiveProductsList {
         activeProductionList.clear();
     }
 
+    public LinkedList<Product> getActiveProductionList() {
+        return activeProductionList;
+    }
 }

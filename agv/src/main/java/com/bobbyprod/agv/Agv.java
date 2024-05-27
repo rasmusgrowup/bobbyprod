@@ -10,43 +10,41 @@ import com.bobbyprod.common.States.AssetState;
 import com.bobbyprod.common.Tasks.Task;
 import com.bobbyprod.common.Tasks.TaskStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 @Component
 public class Agv extends Asset {
     private AgvService agvService;
-    private AgvController agvController;
     private AssetState state;
     private int batteryLevel;
     protected IMediator mediator;
 
-    public Agv() {
+    public Agv(AgvService agvService) {
         super("AGV", "AGV-1", AssetType.AGV);
-        this.agvController = new AgvController(new RestTemplate());
-        this.agvService = new AgvService(agvController);
+        this.agvService = agvService;
         this.mediator = Mediator.getInstance();
-        this.batteryLevel = agvController.getBatteryLevel();
+        this.batteryLevel = agvService.getAgvController().getBatteryLevel();
         this.state = AssetState.IDLE;
     }
 
     public void handleRecharge(){
         int battery = getBatteryLevel();
-        if(battery <= 90){
-            boolean result = agvController.loadProgram("MoveToChargerOperation", 1);
+        if(battery <= 5){
+            boolean result = agvService.getAgvController().loadProgram("MoveToChargerOperation", 1);
+            state = AssetState.CHARGING;
             if (result) {
-                result = agvController.changeState(2);
+                result = agvService.getAgvController().changeState(2);
                 System.out.println("Recharging");
                 while (batteryLevel < 100){
                     batteryLevel = getBatteryLevel();
+                    //System.out.println("Battery Level: " + batteryLevel);
                 }
-                System.out.println("Fully Charged");
+                //System.out.println("Fully Charged");
             }
         }
     }
 
     @Override
     public boolean processTask(Task task) {
-
         this.batteryLevel = getBatteryLevel();
         task.setStatus(TaskStatus.TASK_ACCEPTED);
         handleRecharge();
@@ -58,9 +56,9 @@ public class Agv extends Asset {
             this.state = AssetState.ERROR;
             return false;
         } else {
-            System.out.println("Processing task ...");
             while (this.state == AssetState.BUSY) {
-                setState(agvController.getState());
+                setState(agvService.getAgvController().getState());
+                //System.out.println(this.getName() + " is processing task " + task.getActionType());
             }
             task.setStatus(TaskStatus.TASK_COMPLETED);
             mediator.notify(this, task);
@@ -69,7 +67,7 @@ public class Agv extends Asset {
     }
 
     public int getBatteryLevel() {
-        return agvController.getBatteryLevel();
+        return agvService.getAgvController().getBatteryLevel();
     }
 
     public AssetState getState() {
