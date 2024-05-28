@@ -2,7 +2,7 @@ package com.bobbyprod.warehouse;
 
 import com.bobbyprod.common.Products.Product;
 import com.bobbyprod.common.Products.ProductStatus;
-import com.bobbyprod.common.States.AssetState;
+import com.bobbyprod.common.Assets.AssetState;
 import com.bobbyprod.common.Tasks.Task;
 import org.json.JSONArray;
 import org.json.JSONObject;

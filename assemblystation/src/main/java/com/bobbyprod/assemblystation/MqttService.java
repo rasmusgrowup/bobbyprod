@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MqttService {
-    private MqttClient mqttClient;
+    private final MqttClient mqttClient;
     private final Gson gson;
 
     @Autowired

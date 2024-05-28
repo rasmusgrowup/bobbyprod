@@ -1,6 +1,5 @@
 package com.bobbyprod.common.Assets;
 
-import com.bobbyprod.common.States.AssetState;
 import com.bobbyprod.common.Tasks.Task;
 
 public abstract class Asset {

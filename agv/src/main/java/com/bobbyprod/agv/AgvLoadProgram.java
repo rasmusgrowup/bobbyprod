@@ -1,4 +1,4 @@
-package com.bobbyprod.agv.model;
+package com.bobbyprod.agv;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

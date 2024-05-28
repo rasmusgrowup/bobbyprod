@@ -1,8 +1,6 @@
-package com.bobbyprod.agv.controller;
+package com.bobbyprod.agv;
 
-import com.bobbyprod.agv.model.AgvChangeState;
-import com.bobbyprod.agv.model.AgvLoadProgram;
-import com.bobbyprod.common.States.AssetState;
+import com.bobbyprod.common.Assets.AssetState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;

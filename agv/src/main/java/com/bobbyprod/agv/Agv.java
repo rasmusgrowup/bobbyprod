@@ -1,14 +1,13 @@
 package com.bobbyprod.agv;
 
-import com.bobbyprod.agv.controller.AgvController;
-import com.bobbyprod.agv.service.AgvService;
 import com.bobbyprod.common.Assets.Asset;
 import com.bobbyprod.common.Assets.AssetType;
 import com.bobbyprod.common.Communication.Mediator;
 import com.bobbyprod.common.Interfaces.IMediator;
-import com.bobbyprod.common.States.AssetState;
+import com.bobbyprod.common.Assets.AssetState;
 import com.bobbyprod.common.Tasks.Task;
 import com.bobbyprod.common.Tasks.TaskStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,6 +17,7 @@ public class Agv extends Asset {
     private int batteryLevel;
     protected IMediator mediator;
 
+    @Autowired
     public Agv(AgvService agvService) {
         super("AGV", "AGV-1", AssetType.AGV);
         this.agvService = agvService;

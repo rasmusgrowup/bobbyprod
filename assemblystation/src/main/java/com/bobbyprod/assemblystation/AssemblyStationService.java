@@ -1,6 +1,6 @@
 package com.bobbyprod.assemblystation;
 
-import com.bobbyprod.common.States.AssetState;
+import com.bobbyprod.common.Assets.AssetState;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import jakarta.annotation.PostConstruct;

@@ -1,20 +1,6 @@
 package com.bobbyprod;
 
-import com.bobbyprod.common.Assets.AssetType;
-import com.bobbyprod.common.States.AssetState;
-import com.bobbyprod.common.Tasks.ActionType;
-import com.bobbyprod.common.Tasks.Task;
-import com.bobbyprod.common.Interfaces.IMediator;
-import com.bobbyprod.assemblystation.AssemblyStation;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.never;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class AcceptCompatibleTask {
 
