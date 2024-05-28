@@ -1,8 +1,7 @@
 package com.bobbyprod.warehouse;
 
-import com.bobbyprod.common.States.AssetState;
+import com.bobbyprod.common.Assets.AssetState;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import java.io.*;
 import java.net.HttpURLConnection;

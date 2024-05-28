@@ -1,7 +1,5 @@
-package com.bobbyprod.agv.util;
+package com.bobbyprod.agv;
 
-import com.bobbyprod.agv.controller.AgvController;
-import com.bobbyprod.agv.service.AgvService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;

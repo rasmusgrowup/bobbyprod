@@ -5,9 +5,10 @@ import com.bobbyprod.common.Assets.AssetType;
 import com.bobbyprod.common.Communication.Mediator;
 import com.bobbyprod.common.Interfaces.IMediator;
 import com.bobbyprod.common.Products.ProductStatus;
-import com.bobbyprod.common.States.AssetState;
+import com.bobbyprod.common.Assets.AssetState;
 import com.bobbyprod.common.Tasks.Task;
 import com.bobbyprod.common.Tasks.TaskStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,6 +17,7 @@ public class AssemblyStation extends Asset {
     private final IMediator mediator;
     private final AssemblyStationService assemblyStationService;
 
+    @Autowired
     public AssemblyStation(AssemblyStationService assemblyStationService) {
         super("id", "AssemblyStation", AssetType.ASSEMBLY_STATION);
         this.state = AssetState.IDLE;

@@ -1,6 +1,5 @@
-package com.bobbyprod.agv.service;
+package com.bobbyprod.agv;
 
-import com.bobbyprod.agv.controller.AgvController;
 import com.bobbyprod.common.Products.ProductStatus;
 import com.bobbyprod.common.Tasks.Task;
 import org.springframework.beans.factory.annotation.Autowired;

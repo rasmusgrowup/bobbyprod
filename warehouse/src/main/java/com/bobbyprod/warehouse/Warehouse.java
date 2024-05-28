@@ -4,9 +4,10 @@ import com.bobbyprod.common.Assets.Asset;
 import com.bobbyprod.common.Assets.AssetType;
 import com.bobbyprod.common.Communication.Mediator;
 import com.bobbyprod.common.Interfaces.IMediator;
-import com.bobbyprod.common.States.AssetState;
+import com.bobbyprod.common.Assets.AssetState;
 import com.bobbyprod.common.Tasks.Task;
 import com.bobbyprod.common.Tasks.TaskStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +18,7 @@ public class Warehouse extends Asset{
     private String[] invArray;
     private IMediator mediator;
 
+    @Autowired
     public Warehouse(WarehouseService wService){
         super("id - 1", "warehouse 1", AssetType.WAREHOUSE);
         this.wService = wService;

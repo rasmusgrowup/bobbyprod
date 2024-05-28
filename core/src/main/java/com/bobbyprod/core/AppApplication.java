@@ -89,7 +89,7 @@ public class AppApplication implements CommandLineRunner {
 	public void addProduct() {
 		String droneName = "KillerDrone";
 		String droneID = "ID: D00" + (ProductionQueue.getInstance().getQueue().size() + 1);
-		Product product = new Drone(droneName, droneID, null);
+		Product product = new Drone(droneName, droneID);
 		warehouse.getwService().insertItem(product);
 		ProductionQueue.getInstance().addToQueue(product);
 	}
