@@ -2,21 +2,13 @@
 title AGV Sequence Diagram
 actor User
 participant Agv
-participant AgvController
 participant AgvService
+participant AgvController
 participant Mediator
 participant RestAPIServer
 
-User -> Agv: create Agv
-activate Agv
-Agv -> AgvService: setAgvService(agvService)
-Agv -> AgvController: setAgvController(agvController)
-activate AgvController
-AgvController -> Agv: addObserver(this)
-AgvController -> AgvController: schedulePolling()
-deactivate AgvController
 
-User -> Agv: acceptTask(Task)
+User -> Agv: processTask(Task)
 activate Agv
 Agv -> AgvService: handleTask(Task)
 activate AgvService
@@ -36,22 +28,28 @@ RestAPIServer -> AgvController: response
 deactivate RestAPIServer
 AgvController -> AgvService: state changed
 deactivate AgvController
+
+loop until task is completed
+    Agv -> AgvService: setState()
+    activate AgvService
+    AgvService -> AgvController: getAgvController()
+    deactivate AgvService
+    activate AgvController
+    AgvController -> RestAPIServer: getState()
+    deactivate AgvController
+    activate RestAPIServer
+    RestAPIServer -> Agv: response (state)
+    deactivate RestAPIServer
+end
 AgvService -> Agv: handleTask result
 deactivate AgvService
 Agv -> Mediator: notify(this, task)
 activate Mediator
 Mediator -> Agv: update task status
 deactivate Mediator
-
-AgvController -> RestAPIServer: pollAgvStatus()
-activate RestAPIServer
-RestAPIServer -> AgvController: response (battery, state)
-deactivate RestAPIServer
-AgvController -> Agv: notifyObservers()
 activate Agv
 Agv -> Agv: update state and battery level
 deactivate Agv
 
-deactivate Agv
 
 @enduml

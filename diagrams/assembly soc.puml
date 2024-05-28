@@ -2,7 +2,7 @@
 title "Assembly Station - Separation of Concerns"
 component common {
     interface AssemblyStationSPI {
-        +createAssemblyStationService()
+        +createAssemblyStation()
     }
     interface IAssemblyStationService {
         +startProcess()
@@ -12,7 +12,7 @@ component common {
 }
 
 component assemblystation {
-    class ASClient {
+    class AssemblyStationService {
             +startProcess()
             +getStatus()
             +checkHealth()
@@ -22,7 +22,7 @@ component assemblystation {
     }
 
     class AssemblyStation {
-    +createAssemblyStationService()
+    +createAssemblyStation()
     }
 }
     note right of AssemblyStation
@@ -30,8 +30,8 @@ component assemblystation {
     end note
 
 AssemblyStationSPI <|.. AssemblyStation
-IAssemblyStationService <|.. ASClient
+IAssemblyStationService <|.. AssemblyStationService
 
 AssemblyCommand --> AssemblyStation
-ASClient --> AssemblyStation : updates
+AssemblyStationService --> AssemblyStation : updates
 @enduml

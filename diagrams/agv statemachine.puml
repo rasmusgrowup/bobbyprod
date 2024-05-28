@@ -10,7 +10,6 @@ Charging : Charging battery
 
 Idle --> Busy : startTask
 Busy --> Idle : completeTask
-Busy --> Charging : lowBattery
 Charging --> Idle : fullyCharged
 Error --> Idle : reset
 Idle --> Charging : lowBattery
